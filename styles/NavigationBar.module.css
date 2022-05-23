@@ -1,0 +1,36 @@
+.nav {
+    padding: var(--outer-space);
+    border-bottom: 1px solid #aaa;
+    background-color: #eee;
+    box-shadow: 2px 4px 16px rgba(0,0,0,.05);
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+}
+
+.nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 1em;
+}
+
+.item {
+    padding: .75em;
+    flex-shrink: 0;
+    border: 1px solid #eee;
+    border-radius: .25em;
+    transition: background-color .25s linear;
+    display: inline-flex;
+    gap: .5em;
+}
+.item:hover {
+    background-color: #ccc;
+}
+
+.icon {
+    width: 1em;
+    height: 1em;
+}

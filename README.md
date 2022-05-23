@@ -1,3 +1,16 @@
+# Custom `server.js` and `start` command
+
+To make this work on a shared hosting with Plesk, this uses a custom server.
+
+This is **not recommended** for a first-time next.js project according to documentation,
+and it has plenty of drawbacks. 
+
+Normally, we'd use the `next start` command as provided by next.js.
+
+See https://nextjs.org/docs/advanced-features/custom-server
+
+---
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
