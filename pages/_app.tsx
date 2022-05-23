@@ -4,19 +4,23 @@ import DefaultLayout from "../layouts/default";
 import React, {Component} from "react";
 import {NextPage} from "next";
 
-export type PageWithLayout = NextPage & {
-  layout?: React.FC<any>
+export type Page = NextPage & {
+  layout?: React.FC<any>,
+  title?: string
 }
 
 type QuizAppProps = AppProps & {
-  Component: PageWithLayout,
+  Component: Page,
   pageProps: any
 }
 
 function MyApp({ Component, pageProps }: QuizAppProps) {
   const Layout = Component.layout ?? DefaultLayout;
+  const layoutProps = {
+    title: Component.title ?? 'A new next subpage'
+  };
   return (
-      <Layout>
+      <Layout {...layoutProps}>
         <Component {...pageProps} />
       </Layout>
   )

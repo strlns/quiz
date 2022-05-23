@@ -1,7 +1,7 @@
 import DefaultLayout from "../layouts/default";
-import {PageWithLayout} from "./_app";
+import {Page} from "./_app";
 
-const Home: PageWithLayout = () => {
+const Home: Page = () => {
   return (
       <h1>Hello World</h1>
   )

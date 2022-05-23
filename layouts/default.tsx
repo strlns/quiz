@@ -1,15 +1,31 @@
 import React from "react";
 import styles from '../styles/LayoutDefault.module.css';
 import NavigationBar from "../components/NavigationBar";
+import Head from "next/head";
 
-const DefaultLayout: React.FC<any> = ({children}) => {
+type LayoutProps = {
+    children?: React.ReactNode
+    title?: string
+}
+
+const DefaultLayout: React.FC<LayoutProps> = (
+    {
+        children,
+        title
+}) => {
     return (
-        <div className={styles.app}>
-            <NavigationBar className={styles.nav} />
-            <main className={styles.main}>
-                {children}
-            </main>
-        </div>
+        <>
+            <Head>
+                <title>{title ?? 'Next test'}</title>
+              <meta name='robots' content='noindex'/>
+            </Head>
+            <div className={styles.app}>
+                <NavigationBar className={styles.nav} />
+                <main className={styles.main}>
+                    {children}
+                </main>
+            </div>
+        </>
     );
 }
 
