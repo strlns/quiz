@@ -1,6 +1,7 @@
 .app {
     position: relative;
 }
+
 .nav {
     position: sticky;
     top: 0;
@@ -11,6 +12,6 @@
     margin: 0 auto;
     max-width: calc(120ch + var(--outer-space));
     padding: var(--outer-space);
-    background-color: rgba(255,255,255,.9);
+    background-color: rgba(255, 255, 255, .9);
     min-height: calc(100vh - 120px);
 }

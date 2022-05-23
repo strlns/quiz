@@ -1,5 +1,5 @@
 import '../styles/globals.css'
-import type { AppProps } from 'next/app'
+import type {AppProps} from 'next/app'
 import DefaultLayout from "../layouts/default";
 import React, {Component} from "react";
 import {NextPage} from "next";
@@ -14,7 +14,7 @@ type QuizAppProps = AppProps & {
   pageProps: any
 }
 
-function MyApp({ Component, pageProps }: QuizAppProps) {
+function MyApp({Component, pageProps}: QuizAppProps) {
   const Layout = Component.layout ?? DefaultLayout;
   const layoutProps = {
     title: Component.title ?? 'A new next subpage'

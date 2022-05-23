@@ -2,7 +2,7 @@
     padding: var(--outer-space);
     border-bottom: 1px solid #aaa;
     background-color: #eee;
-    box-shadow: 2px 4px 16px rgba(0,0,0,.05);
+    box-shadow: 2px 4px 16px rgba(0, 0, 0, .05);
     position: sticky;
     top: 0;
     display: flex;
@@ -26,6 +26,7 @@
     display: inline-flex;
     gap: .5em;
 }
+
 .item:hover {
     background-color: #ccc;
 }
