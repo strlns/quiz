@@ -7,6 +7,9 @@
     top: 0;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .75rem;
 }
 
 .nav ul {
@@ -14,17 +17,19 @@
     padding: 0;
     margin: 0;
     display: flex;
-    gap: 1em;
+    gap: .5rem;
+    align-items: center;
 }
 
 .item {
     padding: .75em;
     flex-shrink: 0;
-    border: 1px solid #eee;
+    border: 1px solid #ccc;
     border-radius: .25em;
     transition: background-color .25s linear;
     display: inline-flex;
     gap: .5em;
+    align-items: center;
 }
 
 .item:hover {
@@ -34,4 +39,16 @@
 .icon {
     width: 1em;
     height: 1em;
+}
+
+.session {
+    justify-content: flex-end;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+@media (min-width: 721px) {
+    .nav {
+        flex-wrap: wrap;
+    }
 }
