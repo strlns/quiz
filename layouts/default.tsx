@@ -2,20 +2,12 @@ import React from "react";
 import styles from "../styles/LayoutDefault.module.css";
 import NavigationBar from "../components/NavigationBar";
 import Head from "next/head";
-import { getSession, GetSessionParams, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 type LayoutProps = {
   children?: React.ReactNode;
   title?: string;
 };
-
-export async function getServerSideProps(ctx: GetSessionParams | undefined) {
-  return {
-    props: {
-      session: await getSession(ctx),
-    },
-  };
-}
 
 const DefaultLayout: React.FC<LayoutProps> = ({ children, title }) => {
   const { data: session } = useSession();
