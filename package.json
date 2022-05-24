@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "IS_NETCUP_PHUSION_JAIL=1 next build",
+    "build-local": "next build",
     "start": "NODE_ENV=production PORT=3000 node server.js",
     "lint": "next lint"
   },
