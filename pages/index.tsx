@@ -1,4 +1,4 @@
-import DefaultLayout from "../layouts/default";
+import ProtectedPageLayout from "../layouts/protected-page";
 import { Page } from "./_app";
 import { getSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
@@ -15,6 +15,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-Home.layout = DefaultLayout;
+Home.layout = ProtectedPageLayout;
 
 export default Home;

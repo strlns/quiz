@@ -1,6 +1,6 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import DefaultLayout from "../layouts/default";
+import ProtectedPageLayout from "../layouts/protected-page";
 import React, { Component } from "react";
 import { NextPage } from "next";
 import { SessionProvider } from "next-auth/react";
@@ -19,7 +19,7 @@ function MyApp({
   Component,
   pageProps: { session, ...pageProps },
 }: QuizAppProps) {
-  const Layout = Component.layout ?? DefaultLayout;
+  const Layout = Component.layout ?? ProtectedPageLayout;
   const layoutProps = {
     title: Component.title ?? "Next quiz app",
   };

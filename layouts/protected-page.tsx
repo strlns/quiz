@@ -9,7 +9,7 @@ type LayoutProps = {
   title?: string;
 };
 
-const DefaultLayout: React.FC<LayoutProps> = ({ children, title }) => {
+const ProtectedPageLayout: React.FC<LayoutProps> = ({ children, title }) => {
   const { data: session } = useSession();
   if (session) {
     return (
@@ -42,4 +42,4 @@ const DefaultLayout: React.FC<LayoutProps> = ({ children, title }) => {
   }
 };
 
-export default DefaultLayout;
+export default ProtectedPageLayout;
