@@ -11,18 +11,18 @@ datasource db {
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -45,6 +45,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  Quiz          Quiz[]
 }
 
 model VerificationToken {
@@ -53,4 +54,38 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+enum QuestionType {
+  CHOICE_SINGLE
+  CHOICE_MULTIPLE
+  ESTIMATE_FLOAT
+  ESTIMATE_INT
+  TEXT_GUESS
+}
+
+model Question {
+  id             String       @id @default(cuid())
+  type           QuestionType @default(CHOICE_SINGLE)
+  question_text  String
+  answers        Answer[]
+  answer_numeric Float?       @default(0)
+  time_limit     Int?
+  Quiz           Quiz?        @relation(fields: [quizId], references: [id])
+  quizId         String?
+}
+
+model Answer {
+  id          Int      @id @default(autoincrement())
+  answer_text String
+  question    Question @relation(references: [id], fields: [question_id])
+  question_id String
+  is_solution Boolean
+}
+
+model Quiz {
+  id        String     @id @default(cuid())
+  owner     User?      @relation(fields: [userId], references: [id])
+  questions Question[]
+  userId    String?
 }
