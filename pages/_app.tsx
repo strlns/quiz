@@ -1,21 +1,16 @@
 import "../styles/globals.css";
-import type { AppProps } from "next/app";
 import ProtectedPage from "../layouts/ProtectedPage";
 import React, { Component } from "react";
-import { NextPage } from "next";
 import { SessionProvider } from "next-auth/react";
+import { Page } from "../next-types/Page";
+import { AppProps } from "next/app";
 
-export type Page = NextPage & {
-  layout?: React.FC<any>;
-  title?: string;
-};
-
-type QuizAppProps = AppProps & {
+export type QuizAppProps = AppProps & {
   Component: Page;
   pageProps: any;
 };
 
-function MyApp({
+function QuizApp({
   Component,
   pageProps: { session, ...pageProps },
 }: QuizAppProps) {
@@ -32,4 +27,4 @@ function MyApp({
   );
 }
 
-export default MyApp;
+export default QuizApp;

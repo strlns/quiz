@@ -4,11 +4,7 @@ import NavigationBar from "../components/NavigationBar";
 import Head from "next/head";
 import { useSession } from "next-auth/react";
 import LoginButton from "../components/LoginButton";
-
-type LayoutProps = {
-  children?: React.ReactNode;
-  title: string;
-};
+import { LayoutProps } from "../next-types/LayoutProps";
 
 const ProtectedPage: React.FC<LayoutProps> = ({ children, title }) => {
   const { data: session } = useSession();

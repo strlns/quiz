@@ -3,11 +3,7 @@ import styles from "../styles/layouts/CommonLayoutStyles.module.css";
 import NavigationBar from "../components/NavigationBar";
 import Head from "next/head";
 import { useSession } from "next-auth/react";
-
-type LayoutProps = {
-  children?: React.ReactNode;
-  title: string;
-};
+import { LayoutProps } from "../next-types/LayoutProps";
 
 const PublicPage: React.FC<LayoutProps> = ({ children, title }) => {
   const { data: session } = useSession();

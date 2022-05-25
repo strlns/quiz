@@ -59,6 +59,7 @@ model VerificationToken {
 enum QuestionType {
   CHOICE_SINGLE
   CHOICE_MULTIPLE
+  BOOLEAN
   ESTIMATE_FLOAT
   ESTIMATE_INT
   TEXT_GUESS
@@ -69,7 +70,9 @@ model Question {
   type           QuestionType @default(CHOICE_SINGLE)
   question_text  String
   answers        Answer[]
-  answer_numeric Float?       @default(0)
+  answer_numeric Float?
+  answer_boolean Boolean?
+  answer_guess   String?
   time_limit     Int?
   Quiz           Quiz?        @relation(fields: [quizId], references: [id])
   quizId         String?
@@ -86,6 +89,6 @@ model Answer {
 model Quiz {
   id        String     @id @default(cuid())
   owner     User?      @relation(fields: [userId], references: [id])
-  questions Question[]
+  questions SingleChoice[]
   userId    String?
 }
