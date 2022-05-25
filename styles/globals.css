@@ -9,6 +9,7 @@ body {
 
 :root {
     --outer-space: 1rem;
+    --icon-size: 1rem;
 }
 
 @media (min-width: 721px) {
@@ -25,3 +26,10 @@ a {
 * {
     box-sizing: border-box;
 }
+
+.icon {
+    width: var(--icon-size, 1em);
+    height: var(--icon-size, 1em);
+}
+
+

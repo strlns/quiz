@@ -1,5 +1,5 @@
-import styles from "../styles/LoginButton.module.css";
 import React from "react";
+import btnStyles from "../styles/Button.module.css";
 import { signIn, signOut } from "next-auth/react";
 
 type LoginButtonProps = {
@@ -11,8 +11,7 @@ const LoginButton = ({
   isSignedIn,
   className: outerClassName,
 }: LoginButtonProps) => {
-  const className = `${outerClassName} ${styles.button}`;
-
+  const className = outerClassName ?? btnStyles.button;
   const onClick: React.MouseEventHandler = async (event) => {
     event.preventDefault();
     if (isSignedIn) {
@@ -25,11 +24,11 @@ const LoginButton = ({
   if (isSignedIn) {
     return (
       // eslint-disable-next-line @next/next/no-html-link-for-pages
-      <a href="/api/auth/signin" className={className} onClick={onClick}>
+      <a href="/api/auth/signout" className={className} onClick={onClick}>
         Sign out
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className={styles.icon}
+          className="icon"
           viewBox="0 0 20 20"
           fill="currentColor"
         >
@@ -48,7 +47,7 @@ const LoginButton = ({
         Sign in
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className={styles.icon}
+          className="icon"
           viewBox="0 0 20 20"
           fill="currentColor"
         >

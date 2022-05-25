@@ -1,5 +1,5 @@
 import { Session } from "next-auth";
-import styles from "../styles/NavigationBar.module.css";
+import styles from "../styles/SessionIndicator.module.css";
 import { DefaultSession } from "next-auth";
 
 type SessionIndicatorProps = {
@@ -9,7 +9,7 @@ type SessionIndicatorProps = {
 const iconUser = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    className={styles.icon}
+    className="icon"
     viewBox="0 0 20 20"
     fill="currentColor"
   >
@@ -24,7 +24,7 @@ const iconUser = (
 const iconHeart = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    className={styles.icon}
+    className="icon"
     viewBox="0 0 20 20"
     fill="currentColor"
   >
@@ -39,7 +39,7 @@ const iconHeart = (
 const iconLock = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    className={styles.icon}
+    className="icon"
     viewBox="0 0 20 20"
     fill="currentColor"
   >
@@ -60,14 +60,14 @@ const iconForUser = (user: DefaultSession["user"]) =>
 
 const SessionIndicator = ({ session }: SessionIndicatorProps) => {
   return (
-    <span style={{ display: "flex", alignItems: "center", gap: ".5rem" }}>
+    <span className={styles.text}>
       {session ? (
         <>
           {iconForUser(session.user)}
           {session.user ? `${session.user.name ?? session.user.email}` : ""}
         </>
       ) : (
-        <span>Not signed in</span>
+        "Not signed in"
       )}
     </span>
   );

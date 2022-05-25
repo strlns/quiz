@@ -1,21 +1,22 @@
 import React from "react";
-import styles from "../styles/LayoutDefault.module.css";
+import styles from "../styles/layouts/CommonLayoutStyles.module.css";
 import NavigationBar from "../components/NavigationBar";
 import Head from "next/head";
 import { useSession } from "next-auth/react";
+import LoginButton from "../components/LoginButton";
 
 type LayoutProps = {
   children?: React.ReactNode;
-  title?: string;
+  title: string;
 };
 
-const ProtectedPageLayout: React.FC<LayoutProps> = ({ children, title }) => {
+const ProtectedPage: React.FC<LayoutProps> = ({ children, title }) => {
   const { data: session } = useSession();
   if (session) {
     return (
       <>
         <Head>
-          <title>{title ?? "Next test"}</title>
+          <title>{title}</title>
           <meta name="robots" content="noindex" />
         </Head>
         <div className={styles.app}>
@@ -28,13 +29,17 @@ const ProtectedPageLayout: React.FC<LayoutProps> = ({ children, title }) => {
     return (
       <>
         <Head>
-          <title>Please sign in first</title>
+          <title>Sign In | {title}</title>
           <meta name="robots" content="noindex" />
         </Head>
         <div className={styles.app}>
           <NavigationBar className={styles.nav} session={session} />
-          <main className={styles.main}>
-            <h1>Not signed in</h1>
+          <main className={`${styles.main} ${styles.mainFlex}`}>
+            <h1>Sign in</h1>
+            <div className={styles.centered}>
+              <p>Please sign in to visit this page.</p>
+              <LoginButton isSignedIn={false} />
+            </div>
           </main>
         </div>
       </>
@@ -42,4 +47,4 @@ const ProtectedPageLayout: React.FC<LayoutProps> = ({ children, title }) => {
   }
 };
 
-export default ProtectedPageLayout;
+export default ProtectedPage;
