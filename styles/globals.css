@@ -10,9 +10,18 @@ body {
 :root {
     --outer-space: 1rem;
     --icon-size: 1rem;
+    --input-height: 2.75rem;
+    --border-radius: .375rem;
+    --focus-outline: 2px solid #bdbdbd;
+    --input-border: 1px solid #ccc;
+    --gap-xs: .5rem;
+    --gap-s: .75rem;
+    --desktop: 720px;
+    --blue: #1203aa;
+    --blue-600: #2809dc;
 }
 
-@media (min-width: 721px) {
+@media (min-width: 720px) {
     :root {
         --outer-space: 2rem;
     }
@@ -32,4 +41,19 @@ a {
     height: var(--icon-size, 1em);
 }
 
+input,
+textarea,
+select,
+button {
+    min-height: var(--input-height);
+    font-size: 1em;
+    border-radius: var(--border-radius);
+    border: var(--input-border);
+}
 
+input:focus,
+textarea:focus,
+select:focus,
+button:focus {
+    outline: var(--focus-outline);
+}

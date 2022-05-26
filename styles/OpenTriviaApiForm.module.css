@@ -1,0 +1,12 @@
+.form {
+    display: flex;
+    gap: var(--gap-s);
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.formElement {
+    display: flex;
+    gap: var(--gap-xs);
+    align-items: center;
+}

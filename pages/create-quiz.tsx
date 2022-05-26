@@ -4,7 +4,12 @@ import { GetServerSideProps } from "next";
 import { Page } from "../next-types/Page";
 
 const CreateQuiz: Page = () => {
-  return <h1>Hello World</h1>;
+  return (
+    <>
+      <h1>Create a quiz</h1>
+      <p>Nothing here yet</p>
+    </>
+  );
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {

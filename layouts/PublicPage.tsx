@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { LayoutProps } from "../next-types/LayoutProps";
 
 const PublicPage: React.FC<LayoutProps> = ({ children, title }) => {
-  const { data: session } = useSession();
+  const sessionContext = useSession();
   return (
     <>
       <Head>
@@ -14,7 +14,7 @@ const PublicPage: React.FC<LayoutProps> = ({ children, title }) => {
         <meta name="robots" content="noindex" />
       </Head>
       <div className={styles.app}>
-        <NavigationBar className={styles.nav} session={session} />
+        <NavigationBar className={styles.nav} sessionContext={sessionContext} />
         <main className={styles.main}>{children}</main>
       </div>
     </>

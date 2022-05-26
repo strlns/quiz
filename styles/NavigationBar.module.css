@@ -9,7 +9,7 @@
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: .75rem;
+    gap: var(--gap-s);
 }
 
 .nav ul {
@@ -17,7 +17,7 @@
     padding: 0;
     margin: 0;
     display: flex;
-    gap: .5rem;
+    gap: var(--gap-xs);
     align-items: center;
 }
 
@@ -25,7 +25,7 @@
     justify-content: flex-end;
 }
 
-@media (min-width: 721px) {
+@media (min-width: 720px) {
     .nav {
         flex-wrap: wrap;
     }

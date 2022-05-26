@@ -9,4 +9,7 @@ export class MultipleChoiceQuestion implements Question {
   type: QUESTION_TYPE = "CHOICE_MULTIPLE";
   questionText: string;
   answers: Answer[];
+  get solution() {
+    return this.answers.filter((answer) => answer.isSolution);
+  }
 }

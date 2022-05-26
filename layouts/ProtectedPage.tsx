@@ -7,8 +7,8 @@ import LoginButton from "../components/LoginButton";
 import { LayoutProps } from "../next-types/LayoutProps";
 
 const ProtectedPage: React.FC<LayoutProps> = ({ children, title }) => {
-  const { data: session } = useSession();
-  if (session) {
+  const sessionContext = useSession();
+  if (sessionContext.status === "authenticated") {
     return (
       <>
         <Head>
@@ -16,7 +16,10 @@ const ProtectedPage: React.FC<LayoutProps> = ({ children, title }) => {
           <meta name="robots" content="noindex" />
         </Head>
         <div className={styles.app}>
-          <NavigationBar className={styles.nav} session={session} />
+          <NavigationBar
+            className={styles.nav}
+            sessionContext={sessionContext}
+          />
           <main className={styles.main}>{children}</main>
         </div>
       </>
@@ -25,16 +28,28 @@ const ProtectedPage: React.FC<LayoutProps> = ({ children, title }) => {
     return (
       <>
         <Head>
-          <title>Sign In | {title}</title>
+          <title>
+            {sessionContext.status === "loading" ? "" : "Sign In | "}
+            {title}
+          </title>
           <meta name="robots" content="noindex" />
         </Head>
         <div className={styles.app}>
-          <NavigationBar className={styles.nav} session={session} />
+          <NavigationBar
+            className={styles.nav}
+            sessionContext={sessionContext}
+          />
           <main className={`${styles.main} ${styles.mainFlex}`}>
             <h1>Sign in</h1>
             <div className={styles.centered}>
-              <p>Please sign in to visit this page.</p>
-              <LoginButton isSignedIn={false} />
+              {sessionContext.status === "loading" ? (
+                "Loading..."
+              ) : (
+                <>
+                  <p>Please sign in to visit this page.</p>
+                  <LoginButton sessionContext={sessionContext} />
+                </>
+              )}
             </div>
           </main>
         </div>

@@ -3,17 +3,17 @@ import styles from "../styles/NavigationBar.module.css";
 import btnStyles from "../styles/Button.module.css";
 import { FunctionComponent } from "react";
 import LoginButton from "./LoginButton";
-import { Session } from "next-auth";
 import SessionIndicator from "./SessionIndicator";
+import { SessionContextValue } from "next-auth/react";
 
 type NavigationBarProps = {
   className?: string;
-  session: Session | null;
+  sessionContext?: SessionContextValue;
 };
 
 const NavigationBar: FunctionComponent<NavigationBarProps> = ({
   className: outerClassName,
-  session,
+  sessionContext,
 }: NavigationBarProps) => {
   const className = `${styles.nav} ${outerClassName ?? ""}`;
   return (
@@ -34,29 +34,32 @@ const NavigationBar: FunctionComponent<NavigationBarProps> = ({
             </a>
           </Link>
         </li>
-        {session ? (
-          <>
-            <li>
-              <Link href="/create-quiz">
-                <a className={btnStyles.button}>Create quiz</a>
-              </Link>
-            </li>
-          </>
-        ) : null}
+        <>
+          <li>
+            <Link href="/create-quiz">
+              <a className={btnStyles.button}>Create quiz</a>
+            </Link>
+          </li>
+        </>
         <li>
-          <Link href="/quiz-from-trivia-api">
+          <Link href="/opentrivia/demo">
             <a className={btnStyles.button}>Demo trivia quiz</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="/list/mine">
+            <a className={btnStyles.button}>Mine</a>
           </Link>
         </li>
       </ul>
       <ul className={styles.session}>
         <li>
-          <SessionIndicator session={session} />
+          <SessionIndicator sessionContext={sessionContext} />
         </li>
         <li>
           <LoginButton
             className={btnStyles.button}
-            isSignedIn={Boolean(session)}
+            sessionContext={sessionContext}
           />
         </li>
       </ul>

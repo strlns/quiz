@@ -66,29 +66,29 @@ enum QuestionType {
 }
 
 model Question {
-  id             String       @id @default(cuid())
-  type           QuestionType @default(CHOICE_SINGLE)
-  question_text  String
-  answers        Answer[]
-  answer_numeric Float?
-  answer_boolean Boolean?
-  answer_guess   String?
-  time_limit     Int?
-  Quiz           Quiz?        @relation(fields: [quizId], references: [id])
-  quizId         String?
+  id           String       @id @default(cuid())
+  type         QuestionType @default(CHOICE_SINGLE)
+  questionText String       @map("question_text")
+  answers      Answer[]
+  timeLimit    Int?         @map("time_limit")
+  Quiz         Quiz?        @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  quizId       String?
 }
 
 model Answer {
-  id          Int      @id @default(autoincrement())
-  answer_text String
-  question    Question @relation(references: [id], fields: [question_id])
-  question_id String
-  is_solution Boolean
+  id         Int      @id @default(autoincrement())
+  answerText String   @map("answer_text")
+  question   Question @relation(references: [id], fields: [questionId], onDelete: Cascade)
+  questionId String   @map("question_id")
+  isSolution Boolean  @map("is_solution")
 }
 
 model Quiz {
   id        String     @id @default(cuid())
+  title     String     @default("")
   owner     User?      @relation(fields: [userId], references: [id])
-  questions SingleChoice[]
+  questions Question[]
   userId    String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }

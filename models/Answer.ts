@@ -7,3 +7,8 @@ export class Answer {
     this.isSolution = isSolution;
   }
 }
+
+export type AnswerSerializable = {
+  answerText: string;
+  isSolution: boolean;
+};

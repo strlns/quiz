@@ -9,4 +9,10 @@ export class SingleChoiceQuestion implements Question {
   type: QUESTION_TYPE = "CHOICE_SINGLE";
   questionText: string;
   answers: Answer[];
+  get solution() {
+    const correctAnswers = this.answers.filter((answer) => answer.isSolution);
+    if (correctAnswers.length === 1) {
+      return correctAnswers[0];
+    }
+  }
 }

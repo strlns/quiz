@@ -1,7 +1,7 @@
 .text {
     display: flex;
     align-items: center;
-    gap: .5rem;
+    gap: var(--gap-xs);
     font-size: .875rem;
     font-weight: 600;
 }

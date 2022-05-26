@@ -1,0 +1,17 @@
+.table th {
+    text-align: left;
+    font-weight: bold;
+}
+.table th,
+.table td
+{
+    padding: .5em .75em;
+}
+.quizLink {
+    font-weight: 600;
+    color: var(--blue);
+}
+.quizLink:hover {
+    font-weight: 600;
+    color: var(--blue-600);
+}
