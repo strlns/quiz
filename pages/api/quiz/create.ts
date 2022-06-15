@@ -1,7 +1,7 @@
 import { getSession } from "next-auth/react";
 import { Prisma } from "@prisma/client";
 import prisma from "../../../globals/db";
-import { DEFAULT_TITLE, QuizSerializable } from "../../../models/Quiz";
+import { DEFAULT_TITLE, isQuiz } from "../../../models/Quiz";
 import { NextApiHandler } from "next";
 
 const handler: NextApiHandler = async (req, res) => {
@@ -32,13 +32,12 @@ const handler: NextApiHandler = async (req, res) => {
    * @todo VALIDATE JSON format!!!
    * This poor "validate" function is not enough.
    */
-  const quizData = JSON.parse(req.body) as QuizSerializable;
-  try {
-    validate(quizData);
-  } catch {
+  const quizData: unknown = JSON.parse(req.body);
+  if (!isQuiz(quizData)) {
     res.status(500).json({
       error: "Invalid data",
     });
+    return;
   }
 
   if (quizData.title.length === 0) {
@@ -78,14 +77,3 @@ const handler: NextApiHandler = async (req, res) => {
 };
 
 export default handler;
-
-const validate = (quizSerializable: QuizSerializable): boolean => {
-  if (quizSerializable.questions.length > 100) {
-    throw new Error("Too many questions");
-  } else if (
-    quizSerializable.questions.some((question) => question.answers.length > 20)
-  ) {
-    throw new Error("Too many answers");
-  }
-  return true;
-};

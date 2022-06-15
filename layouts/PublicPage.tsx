@@ -4,6 +4,7 @@ import NavigationBar from "../components/NavigationBar";
 import Head from "next/head";
 import { useSession } from "next-auth/react";
 import { LayoutProps } from "../next-types/LayoutProps";
+import clsx from "clsx";
 
 const PublicPage: React.FC<LayoutProps> = ({ children, title }) => {
   const sessionContext = useSession();
@@ -15,7 +16,7 @@ const PublicPage: React.FC<LayoutProps> = ({ children, title }) => {
       </Head>
       <div className={styles.app}>
         <NavigationBar className={styles.nav} sessionContext={sessionContext} />
-        <main className={styles.main}>{children}</main>
+        <main className={clsx(styles.main, styles.mainFlex)}>{children}</main>
       </div>
     </>
   );

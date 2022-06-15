@@ -1,6 +1,6 @@
-import { SingleChoiceQuestion } from "../../models/SingleChoiceQuestion";
-import styles from "../../styles/Question.module.css";
-import loadingStyles from "../../styles/LoadingIndicator.module.css";
+import { SingleChoiceQuestion } from "../../../models/SingleChoiceQuestion";
+import styles from "../../../styles/Question.module.css";
+import loadingStyles from "../../../styles/LoadingIndicator.module.css";
 import { answerClassName, QuestionProps } from "./Question";
 
 interface SingleChoiceProps extends QuestionProps {
@@ -9,18 +9,19 @@ interface SingleChoiceProps extends QuestionProps {
 
 const SingleChoice = ({
   question,
-  selectedAnswer,
-  setSelectedAnswer,
+  selectedAnswers,
+  setSelectedAnswers,
   passed,
 }: SingleChoiceProps) => {
+  const selectedAnswer = selectedAnswers[0] ?? undefined;
   return (
     <div className={styles.question}>
       <h3 className={styles.questionText}>{question.questionText}</h3>
-      {question.answers.map((answer) => (
+      {question.answers.map((answer, index) => (
         <div
           key={answer.answerText}
-          className={answerClassName(answer, passed, selectedAnswer === answer)}
-          onClick={() => setSelectedAnswer(answer)}
+          className={answerClassName(answer, passed, selectedAnswer === index)}
+          onClick={() => setSelectedAnswers([index])}
         >
           {answer.answerText}
         </div>

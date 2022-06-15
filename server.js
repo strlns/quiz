@@ -1,30 +1,35 @@
 // server.js
-const {createServer} = require('http')
-const {parse} = require('url')
-const next = require('next')
+const { createServer } = require("http");
+const { parse } = require("url");
+const next = require("next");
+const { loadEnvConfig } = require("@next/env");
 
-const dev = process.env.NODE_ENV !== 'production'
-const hostname = 'localhost'
-const port = Number(process.env.PORT ?? 80);
+const dev = process.env.NODE_ENV !== "production";
+const hostname = "localhost";
+
+const nextDotEnvConfig = loadEnvConfig(process.cwd(), dev);
+const portFromEnv = nextDotEnvConfig.combinedEnv.PORT ?? process.env.PORT;
+const port = Number(portFromEnv ?? 80);
+
 // when using middleware `hostname` and `port` must be provided below
-const app = next({dev, hostname, port})
-const handle = app.getRequestHandler()
+const app = next({ dev, hostname, port });
+const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
-    createServer(async (req, res) => {
-        try {
-            // Be sure to pass `true` as the second argument to `url.parse`.
-            // This tells it to parse the query portion of the URL.
-            const parsedUrl = parse(req.url, true)
-            // const { pathname, query } = parsedUrl;
-            await handle(req, res, parsedUrl)
-        } catch (err) {
-            console.error('Error occurred handling', req.url, err)
-            res.statusCode = 500
-            res.end('internal server error')
-        }
-    }).listen(port, (err) => {
-        if (err) throw err
-        console.log(`> Ready on http://${hostname}:${port}`)
-    })
-})
+  createServer(async (req, res) => {
+    try {
+      // Be sure to pass `true` as the second argument to `url.parse`.
+      // This tells it to parse the query portion of the URL.
+      const parsedUrl = parse(req.url, true);
+      // const { pathname, query } = parsedUrl;
+      await handle(req, res, parsedUrl);
+    } catch (err) {
+      console.error("Error occurred handling", req.url, err);
+      res.statusCode = 500;
+      res.end("internal server error");
+    }
+  }).listen(port, (err) => {
+    if (err) throw err;
+    console.log(`> Ready on http://${hostname}:${port}`);
+  });
+});

@@ -1,32 +1,41 @@
 import PublicPage from "../../layouts/PublicPage";
 import { Page } from "../../next-types/Page";
-import { Quiz, QuizPrismaGeneratedModelWithRelations } from "../../models/Quiz";
+import {
+  fromPrisma,
+  QuizPrismaGeneratedModelWithRelations,
+} from "../../models/Quiz";
 import prisma from "../../globals/db";
 import { GetServerSideProps } from "next";
 import QuizGame, { Skeleton } from "../../components/QuizGame";
-import { useEffect, useState } from "react";
-import { Game } from "../../models/Game";
+import { useEffect, useReducer } from "react";
+import { createNewGame, gameReducer } from "../../models/Game";
 
 type PlayQuizProps = {
   quizFromDB: QuizPrismaGeneratedModelWithRelations;
 };
 
 const PlayQuiz: Page<PlayQuizProps> = ({ quizFromDB }) => {
-  const [quiz, setQuiz] = useState(undefined as Quiz | undefined);
-  const [game, setGame] = useState(undefined as Game | undefined);
+  const [game, dispatchGameAction] = useReducer(
+    gameReducer,
+    createNewGame(fromPrisma(quizFromDB))
+  );
+
   useEffect(() => {
-    if (quiz) {
-      setGame(new Game(quiz));
-    }
-  }, [quiz]);
-  useEffect(() => {
-    setQuiz(Quiz.fromPrisma(quizFromDB));
+    dispatchGameAction({
+      type: "NEW",
+      data: createNewGame(fromPrisma(quizFromDB)),
+    });
   }, [quizFromDB]);
+
   return game ? (
     <>
       <h1>{game.quiz.title}</h1>
       <h2>By: {game.quiz.owner}</h2>
-      {game ? <QuizGame game={game} /> : <Skeleton />}
+      {game ? (
+        <QuizGame game={game} dispatchGameAction={dispatchGameAction} />
+      ) : (
+        <Skeleton />
+      )}
     </>
   ) : (
     <Skeleton />

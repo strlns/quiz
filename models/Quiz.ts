@@ -1,9 +1,7 @@
-import { Question, QuestionSerializable } from "./Question";
+import { isQuestion, Question } from "./Question";
 import { shuffle } from "lodash-es";
 import { Prisma, Quiz as QuizPrisma } from "@prisma/client";
-import { BooleanQuestion } from "./BooleanQuestion";
-import { Answer } from "./Answer";
-import { SingleChoiceQuestion } from "./SingleChoiceQuestion";
+import { isAnswer } from "./Answer";
 
 export type QuizPrismaGeneratedModel = QuizPrisma;
 
@@ -24,67 +22,40 @@ export type QuizPrismaGeneratedModelWithRelations = Prisma.QuizGetPayload<{
 
 export const DEFAULT_TITLE = "Untitled Quiz";
 
-export class Quiz {
+export type Quiz = {
   title: string;
   owner: string;
-  prisma?: QuizPrisma;
+  id?: string;
+  questions: Question[];
+};
 
-  constructor(
-    title?: string,
-    owner?: string,
-    questions?: Question[],
-    prisma?: QuizPrisma
-  ) {
-    this.title = title ?? DEFAULT_TITLE;
-    this.owner = owner ?? "";
-    this.questions = questions ?? [];
-    this.prisma = prisma;
-  }
-
-  questions: Question[] = [];
-
-  /**
-   Don't use this in code that runs on both the server and the client,
-   it would lead to hydration errors.
-   */
-  shuffleAnswers(): void {
-    for (const question of this.questions) {
-      question.answers = shuffle(question.answers);
-    }
-  }
-
-  serialize(): string {
-    return JSON.stringify(this);
-  }
-
-  static fromPrisma(input: QuizPrismaGeneratedModelWithRelations): Quiz {
-    const quiz = new Quiz(input.title);
-    quiz.owner = input.owner?.email ?? "";
-    quiz.questions = input.questions.map((question) => {
-      switch (question.type) {
-        case "BOOLEAN":
-          return new BooleanQuestion(
-            question.questionText,
-            question.answers.map(
-              (a) => new Answer(a.answerText, a.isSolution)
-            ) as [Answer, Answer]
-          );
-        case "CHOICE_SINGLE":
-          return new SingleChoiceQuestion(
-            question.questionText,
-            question.answers.map((a) => new Answer(a.answerText, a.isSolution))
-          );
-        default:
-          throw new Error();
-      }
-    });
-    return quiz;
-  }
+export function fromPrisma(
+  dbResult: QuizPrismaGeneratedModelWithRelations
+): Quiz {
+  return {
+    title: dbResult.title,
+    owner: dbResult.owner?.email ?? "",
+    questions: dbResult.questions.map(({ type, questionText, answers }) => ({
+      type,
+      questionText,
+      answers: answers.map(({ answerText, isSolution }) => ({
+        answerText,
+        isSolution,
+      })),
+    })),
+  };
 }
 
-export interface QuizSerializable {
-  title: string;
-  questions: QuestionSerializable[];
+/**
+ Don't use this in code that runs on both the server and the client,
+ it would lead to hydration errors.
+ */
+export function shuffleAnswers(quiz: Quiz): Quiz {
+  const result = structuredClone(quiz);
+  for (const question of result.questions) {
+    question.answers = shuffle(question.answers);
+  }
+  return result;
 }
 
 export interface QuizListData
@@ -116,3 +87,24 @@ export const withViewDate = (
   createdAt: q.createdAt.toUTCString(),
   updatedAt: q.updatedAt.toUTCString(),
 });
+
+/*
+ * This should probably use something like a generated JSON schema
+ */
+export const isQuiz = (data: any): data is Quiz => {
+  let valid = Boolean(data) && typeof data === "object";
+  valid = valid && data.questions && Array.isArray(data.questions);
+  valid =
+    valid &&
+    data.questions.every(
+      (questionData: any) =>
+        isQuestion(questionData) &&
+        questionData.answers.every((answerData) => isAnswer(answerData))
+    );
+
+  valid = valid && data.questions.length <= 100;
+  valid =
+    valid &&
+    data.questions.every((question: Question) => question.answers.length <= 8);
+  return valid;
+};

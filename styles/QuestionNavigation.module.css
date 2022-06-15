@@ -1,0 +1,8 @@
+.disabled {
+    opacity: .75;
+    background: linear-gradient(192deg, rgba(25, 25, 25, .075), rgba(255, 255, 255, .95));
+    cursor: default;
+    pointer-events: none;
+    color: #cecece;
+    outline: none;
+}

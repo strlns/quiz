@@ -1,14 +1,18 @@
 import styles from "../styles/QuizGame.module.css";
-import btnStyles from "../styles/Button.module.css";
-import boxStyles from "../styles/BoxUtility.module.css";
-import Question from "./Question/Question";
-import { useEffect, useState } from "react";
-import { Game } from "../models/Game";
-import { Answer } from "../models/Answer";
-import { SingleChoicePlaceholder } from "./Question/SingleChoice";
+import boxStyles from "../styles/UtilityStyles.module.css";
+import Question from "./Quiz/Question/Question";
+import { Dispatch } from "react";
+import { Game, GameAction } from "../models/Game";
+import { SingleChoicePlaceholder } from "./Quiz/Question/SingleChoice";
+import QuestionPlaceholder from "./Quiz/Question/QuestionPlaceholder";
+import Finished from "./Quiz/Finished";
+import Navigation from "./Quiz/Navigation";
+import clsx from "clsx";
+import { isCorrect } from "../models/Question";
 
 type QuizGameProps = {
   game: Game;
+  dispatchGameAction: Dispatch<GameAction>;
 };
 
 export const Skeleton = () => (
@@ -20,98 +24,110 @@ export const Skeleton = () => (
 );
 
 const QuizGame = ({
-  game: {
-    quiz,
-    currentQuestionIndex: initialQuestionIndex,
-    answers: initialAnswers,
-  },
+  game: { answers, quiz, currentQuestionIndex },
+  dispatchGameAction,
 }: QuizGameProps) => {
-  const [currentQuestion, setCurrentQuestion] = useState(initialQuestionIndex);
-  const [answers, setAnswers] = useState(initialAnswers);
-  const [isFinished, setFinished] = useState(false);
-
-  const updateAnswer = (answer: Answer, questionIndex: number) => {
-    setAnswers((answers) => {
-      const newAnswers = answers.slice();
-      newAnswers[questionIndex] = answer;
-      return newAnswers;
-    });
-    setFinished(questionIndex === quiz.questions.length - 1);
-    if (questionIndex < quiz.questions.length - 1) {
-      setCurrentQuestion(questionIndex + 1);
-    }
-  };
-
-  const reset = () => {
-    setAnswers([]);
-    setCurrentQuestion(0);
-    setFinished(false);
-  };
-
-  useEffect(() => {
-    setAnswers([]);
-    setCurrentQuestion(0);
-    setFinished(false);
-  }, [quiz]);
-
-  const numberOfCorrectAnswers = answers.filter((a) => a?.isSolution).length;
+  const isFinished =
+    answers.length === quiz.questions.length &&
+    answers.every((answer) => answer !== undefined);
+  const numberOfCorrectAnswers = answers.filter((a, index) =>
+    isCorrect(a, quiz.questions[index])
+  ).length;
+  const question = quiz.questions[currentQuestionIndex];
+  const answer = answers[currentQuestionIndex];
+  const hasAnswer = answer !== undefined;
+  const isLast = currentQuestionIndex >= quiz.questions.length - 1;
+  const isFirst = currentQuestionIndex === 0;
 
   return (
-    <div className={styles.quiz}>
+    <div
+      className={clsx(
+        styles.quiz,
+        boxStyles.flexGrow,
+        boxStyles.flex,
+        boxStyles.flexCol
+      )}
+    >
+      <div className={styles.topBar}>
+        <h3>
+          {isFinished
+            ? `${numberOfCorrectAnswers} / ${quiz.questions.length}`
+            : null}
+        </h3>
+        <span>
+          {currentQuestionIndex + 1} / {quiz.questions.length}
+        </span>
+      </div>
       <div
-        className={`${styles.questionContainer} ${
-          isFinished ? styles.finished : ""
-        }`}
+        className={clsx(
+          styles.quizInner,
+          isFinished && styles.finished,
+          boxStyles.flexGrow,
+          boxStyles.flex,
+          boxStyles.flexCol,
+          boxStyles.justifyEvenly,
+          boxStyles.itemsCenter
+        )}
       >
-        <div className={styles.topBar}>
-          <h3>
-            {isFinished
-              ? `${numberOfCorrectAnswers} / ${quiz.questions.length}`
-              : null}
-          </h3>
-          <span>
-            {currentQuestion + 1} / {quiz.questions.length}
-          </span>
-        </div>
-        {quiz.questions.map((question, index) => (
+        {question ? (
           <Question
-            key={index}
             question={question}
-            active={index === currentQuestion}
-            passed={index < currentQuestion || isFinished}
-            selectedAnswer={answers[index]}
-            setSelectedAnswer={(answer) => updateAnswer(answer, index)}
+            selectedAnswers={answers[currentQuestionIndex] ?? []}
+            setSelectedAnswers={(answer) =>
+              dispatchGameAction({
+                type: "ANSWER",
+                data: {
+                  answer,
+                  index: currentQuestionIndex,
+                },
+              })
+            }
+            passed={hasAnswer}
           />
-        ))}
-        {isFinished ? (
-          <div className={styles.result}>
-            <h1
-              style={{
-                fontSize: "2rem",
-                padding: "4rem",
-                textAlign: "center",
-              }}
-            >
-              Finished
-            </h1>
-            <p>
-              {numberOfCorrectAnswers} of {quiz.questions.length} questions
-              answered correctly.
-            </p>
-            <div
-              className={boxStyles.boxBlockCenter}
-              style={{ minHeight: "75%" }}
-            >
-              <button
-                type="button"
-                onClick={reset}
-                className={btnStyles.bigButton}
-              >
-                Repeat
-              </button>
-            </div>
-          </div>
-        ) : null}
+        ) : (
+          <QuestionPlaceholder />
+        )}
+        <div
+          className={clsx(
+            styles.bottomBar,
+            boxStyles.flex,
+            boxStyles.justifyCenter,
+            boxStyles.itemsEnd
+          )}
+        >
+          {isFinished ? (
+            <Finished
+              numberOfQuestions={quiz.questions.length}
+              numberOfCorrectAnswers={numberOfCorrectAnswers}
+              reset={() =>
+                dispatchGameAction({
+                  type: "RESET",
+                })
+              }
+            />
+          ) : (
+            <Navigation
+              next={
+                isLast
+                  ? undefined
+                  : () =>
+                      dispatchGameAction({
+                        type: "NEXT",
+                      })
+              }
+              prev={
+                isFirst
+                  ? undefined
+                  : () =>
+                      dispatchGameAction({
+                        type: "PREV",
+                      })
+              }
+              nextDisabled={!hasAnswer}
+              prevDisabled={isFirst}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

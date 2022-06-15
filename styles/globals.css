@@ -16,6 +16,9 @@ body {
     --input-border: 1px solid #ccc;
     --gap-xs: .5rem;
     --gap-s: .75rem;
+    --gap-m: 1rem;
+    --gap-l: 1.5rem;
+    --gap: var(--gap-s);
     --desktop: 720px;
     --blue: #1203aa;
     --blue-600: #2809dc;

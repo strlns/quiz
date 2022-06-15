@@ -1,5 +1,5 @@
-import styles from "../../styles/Question.module.css";
-import { BooleanQuestion } from "../../models/BooleanQuestion";
+import styles from "../../../styles/Question.module.css";
+import { BooleanQuestion } from "../../../models/BooleanQuestion";
 import { answerClassName, QuestionProps } from "./Question";
 
 interface BooleanQuestionProps extends QuestionProps {
@@ -8,18 +8,19 @@ interface BooleanQuestionProps extends QuestionProps {
 
 const BooleanChoice = ({
   question,
-  selectedAnswer,
-  setSelectedAnswer,
+  selectedAnswers,
+  setSelectedAnswers,
   passed,
 }: BooleanQuestionProps) => {
+  const selectedAnswer = selectedAnswers[0] ?? undefined;
   return (
     <div className={styles.question}>
       <h3 className={styles.questionText}>{question.questionText}</h3>
-      {question.answers.map((answer) => (
+      {question.answers.map((answer, index) => (
         <div
           key={answer.answerText}
-          className={answerClassName(answer, passed, selectedAnswer === answer)}
-          onClick={() => setSelectedAnswer(answer)}
+          className={answerClassName(answer, passed, selectedAnswer === index)}
+          onClick={() => setSelectedAnswers([index])}
         >
           {answer.answerText}
         </div>

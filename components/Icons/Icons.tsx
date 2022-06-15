@@ -1,6 +1,8 @@
-import React from "react";
+import React, { SVGAttributes } from "react";
 
-export const SignInIcon = () => (
+type SVGIconProps = SVGAttributes<SVGElement>;
+
+export const SignInIcon = ({}: SVGIconProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     className="icon"
@@ -15,7 +17,7 @@ export const SignInIcon = () => (
   </svg>
 );
 
-export const SignOutIcon = () => (
+export const SignOutIcon = ({}: SVGIconProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     className="icon"
@@ -30,7 +32,7 @@ export const SignOutIcon = () => (
   </svg>
 );
 
-export const PersonIcon = () => (
+export const PersonIcon = ({}: SVGIconProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     className="icon"
@@ -45,7 +47,7 @@ export const PersonIcon = () => (
   </svg>
 );
 
-export const HeartIcon = () => (
+export const HeartIcon = ({}: SVGIconProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     className="icon"
@@ -60,7 +62,82 @@ export const HeartIcon = () => (
   </svg>
 );
 
-export const LockIcon = () => (
+export const ArrowLeft = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="icon"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M10 19l-7-7m0 0l7-7m-7 7h18"
+      />
+    </svg>
+  );
+};
+
+export const ArrowRight = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="icon"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M14 5l7 7m0 0l-7 7m7-7H3"
+      />
+    </svg>
+  );
+};
+
+export const ArrowDown = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="icon"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M17 13l-5 5m0 0l-5-5m5 5V6"
+      />
+    </svg>
+  );
+};
+
+export const ArrowUp = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="icon"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M5 10l7-7m0 0l7 7m-7-7v18"
+      />
+    </svg>
+  );
+};
+
+export const LockIcon = ({}: SVGIconProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     className="icon"

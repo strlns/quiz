@@ -2,42 +2,62 @@ import {
   OpenTriviaResponse,
   OpenTriviaResponseWithShuffledAnswers,
   QuestionType,
+  ResultWithShuffledAnswers,
 } from "./OpenTriviaResponse";
 import { Quiz } from "../Quiz";
-import { BooleanQuestion } from "../BooleanQuestion";
-import { SingleChoiceQuestion } from "../SingleChoiceQuestion";
 import { Answer } from "../Answer";
 import { shuffle } from "lodash-es";
+import { v4 as UUID } from "uuid";
+import { Question } from "../Question";
+
+const convertAnswer = (
+  answerText: string,
+  index: number,
+  correct_index: number
+): Answer => ({
+  answerText: decodeSafeEntities(answerText),
+  isSolution: index === correct_index,
+});
 
 export const toQuiz = (input: OpenTriviaResponseWithShuffledAnswers): Quiz => {
-  const quiz = new Quiz();
-  for (const inputQuestion of input.results) {
-    switch (inputQuestion.type) {
-      case QuestionType.Boolean: {
-        const questionString = decodeSafeEntities(inputQuestion.question);
-        const answers = inputQuestion.shuffled_answers.map(
+  const numberOfQuestions = input.results.length;
+  const dateString = new Date().toISOString();
+  const id = UUID();
+  return {
+    id,
+    title: `OpenTrivia Quiz with ${numberOfQuestions} questions, ${dateString}`,
+    questions: input.results.map((inputQuestion) =>
+      convertQuestion(inputQuestion)
+    ),
+    owner: "",
+  };
+};
+
+const convertQuestion = (
+  inputQuestion: ResultWithShuffledAnswers
+): Question => {
+  switch (inputQuestion.type) {
+    case QuestionType.Boolean: {
+      return {
+        type: "BOOLEAN",
+        questionText: decodeSafeEntities(inputQuestion.question),
+        answers: inputQuestion.shuffled_answers.map(
           (answerText: string, index: number) =>
-            new Answer(answerText, index === inputQuestion.correct_index)
-        ) as [Answer, Answer];
-        quiz.questions.push(new BooleanQuestion(questionString, answers));
-        break;
-      }
-      case QuestionType.Multiple: {
-        const convertedQuestion = new SingleChoiceQuestion(
-          decodeSafeEntities(inputQuestion.question),
-          inputQuestion.shuffled_answers.map((answer, index) => {
-            return new Answer(
-              decodeSafeEntities(answer),
-              inputQuestion.correct_index === index
-            );
-          })
-        );
-        quiz.questions.push(convertedQuestion);
-        break;
-      }
+            convertAnswer(answerText, index, inputQuestion.correct_index)
+        ) as [Answer, Answer],
+      };
+    }
+    case QuestionType.Multiple: {
+      return {
+        type: "CHOICE_SINGLE",
+        questionText: decodeSafeEntities(inputQuestion.question),
+        answers: inputQuestion.shuffled_answers.map(
+          (answerText: string, index: number) =>
+            convertAnswer(answerText, index, inputQuestion.correct_index)
+        ) as Answer[],
+      };
     }
   }
-  return quiz;
 };
 
 /**
