@@ -1,0 +1,39 @@
+.quiz {
+  position: relative;
+  --question-width: 40rem;
+  --question-width: min(80vw, 64ch);
+  padding-top: var(--quiz-top-bar-height);
+  min-height: calc(100vh - var(--outer-space));
+}
+
+@media (min-width: 960px) {
+  .quiz {
+    --question-width: min(50vh, 64ch);
+    --quiz-top-bar-height: 5rem;
+  }
+}
+
+.quizInner {
+  position: relative;
+}
+
+.result {
+  animation: fade-in 0.5s ease-in-out;
+  animation-fill-mode: both;
+  animation-delay: 1000ms;
+}
+
+@keyframes fade-in {
+  from {
+    transform: translateX(-4em);
+    opacity: 0;
+  }
+  50% {
+    transform: translateX(-1em);
+    opacity: 0.5;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

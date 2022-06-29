@@ -1,0 +1,143 @@
+.nav {
+  font-size: 1rem;
+  min-height: var(--nav-min-height);
+  border-bottom: 1px solid #aaa;
+  background-color: #eee;
+  box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.05);
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  align-items: stretch;
+  gap: var(--gap-m);
+  --icon-size: 1em;
+  --icon-size: max(1rem, 1em);
+}
+
+@media (min-width: 960px) {
+  .nav {
+    position: sticky;
+    transition: top 0.25s ease-out;
+  }
+  .nav.scrolled {
+    top: calc(-1 * var(--nav-height));
+  }
+}
+
+.navContent {
+  flex-grow: 1;
+  max-width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 1rem;
+  margin: 0;
+}
+
+.nav ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navItemsSession {
+  display: flex;
+  align-self: stretch;
+  align-items: center;
+  flex-basis: 100%;
+  margin-top: 1em !important;
+  gap: var(--gap-xs);
+}
+
+.navItemsMain {
+  gap: var(--gap-xs);
+}
+
+@media (min-width: 720px) {
+  .navContent {
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+  .navItemsMain {
+    gap: var(--gap-s);
+  }
+}
+
+@media (min-width: 960px) {
+  .navItemsMain {
+    gap: var(--gap-l);
+  }
+  .navItemsSession {
+    margin-top: 0;
+    flex-basis: auto;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+}
+.navItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  padding: 0.25em 0.5em;
+  white-space: nowrap;
+}
+
+.navToggle {
+  border-radius: 50rem;
+  height: 2rem;
+  min-width: 2rem;
+  padding: 0 0.5rem;
+  min-height: 0;
+  cursor: pointer;
+  border: none;
+  background: rgba(128, 128, 128, 0.25);
+  align-self: center;
+  justify-content: center;
+  position: fixed;
+  right: 0.5rem;
+  top: calc(var(--quiz-top-bar-height) * 0.5 - 1rem);
+  gap: 0;
+}
+
+.navToggleText {
+  width: 0;
+  display: block;
+  overflow: hidden;
+}
+
+.nav:not(.scrolled) .navToggle,
+.nav.show .navToggle {
+  background: rgba(200, 200, 200, 0.9);
+  gap: var(--gap);
+}
+
+.nav:not(.scrolled) .navToggleText,
+.nav.show .navToggleText {
+  width: auto;
+}
+
+@media (max-width: 959px) {
+  .nav {
+    --nav-min-height: 0;
+    padding-right: 2.5rem;
+  }
+  .nav:not(.show) .navContent {
+    display: none;
+  }
+}
+
+@media (min-width: 960px) {
+  .navItem.loginLogoutButton {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .navItem {
+    font-size: 1.5em;
+    padding: 0.5em 1em;
+    min-height: 1.125em;
+  }
+}

@@ -1,0 +1,10 @@
+.passedAnswerResult {
+    display: block;
+    font-weight: 900;
+    font-size: 3em;
+    opacity: .5;
+}
+
+.passedAnswerResultCorrect {
+    color: #224400;
+}

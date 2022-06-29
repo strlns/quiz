@@ -1,0 +1,28 @@
+.topBar {
+  position: absolute;
+  top: 0;
+  right: var(--outer-space-negative);
+  left: var(--outer-space-negative);
+  height: var(--quiz-top-bar-height);
+  padding: 0.5rem var(--outer-space);
+  gap: var(--gap-s);
+  background: linear-gradient(
+    30deg,
+    rgba(125, 125, 125, 0.0025),
+    rgba(0, 0, 0, 0.0625)
+  );
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4c4c4c;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+}
+
+@media (max-width: 959px) {
+  .topBar {
+    padding-right: 3.5rem;
+  }
+}

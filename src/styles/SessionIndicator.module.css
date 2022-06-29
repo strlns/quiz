@@ -1,0 +1,6 @@
+.text {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    font-size: .875rem;
+}

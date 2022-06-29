@@ -1,0 +1,133 @@
+.boxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap);
+}
+
+.boxLast {
+  flex-grow: 1;
+}
+
+@media (min-width: 720px) {
+  .boxLast {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+.boxBlockCenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.inlineFlex {
+  display: inline-flex;
+}
+
+.justifyCenter {
+  justify-content: center;
+}
+
+.justifyBetween {
+  justify-content: space-between;
+}
+
+.justifyEnd {
+  justify-content: flex-end;
+}
+
+.justifyEvenly {
+  justify-content: space-evenly;
+}
+
+.justifyAround {
+  justify-content: space-around;
+}
+
+.itemsCenter {
+  align-items: center;
+}
+
+.itemsEnd {
+  align-items: flex-end;
+}
+
+.selfCenter {
+  align-self: center;
+}
+
+.selfEnd {
+  align-self: flex-end;
+}
+
+.selfStart {
+  align-self: flex-start;
+}
+
+.flexGrow {
+  flex-grow: 1;
+}
+
+.flexShrink0 {
+  flex-shrink: 0;
+}
+
+.flexCol {
+  flex-direction: column;
+}
+
+.flex {
+  display: flex;
+}
+
+.flexWrap {
+  flex-wrap: wrap;
+}
+
+.gap {
+  gap: var(--gap);
+}
+
+.setGapXS {
+  --gap: var(--gap-xs);
+}
+
+.setGapM {
+  --gap: var(--gap-m);
+}
+
+.setGapL {
+  --gap: var(--gap-l);
+}
+
+.setGapS {
+  --gap: var(--gap-s);
+}
+
+.hFull {
+  height: 100%;
+}
+
+.whitespaceNowrap {
+  white-space: nowrap;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (min-width: 960px) {
+  .lg\:hidden {
+    display: none;
+  }
+  .lg\:block {
+    display: block;
+  }
+  .lg\:flex {
+    display: flex;
+  }
+  .lg\:inline-flex {
+    display: inline-flex;
+  }
+}

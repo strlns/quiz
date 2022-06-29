@@ -1,0 +1,11 @@
+.table th {
+  text-align: left;
+  font-weight: bold;
+}
+.table th,
+.table td {
+  padding: 0.5em 0.75em;
+}
+.quizLink {
+  font-weight: 600;
+}

@@ -1,0 +1,56 @@
+.button {
+    padding: .75em;
+    flex-shrink: 0;
+    border: 1px solid #ccc;
+    transition: background-color .25s linear;
+    display: inline-flex;
+    gap: .5em;
+    align-items: center;
+    cursor: pointer;
+    background-color: transparent;
+    min-height: var(--input-height);
+    border-radius: var(--border-radius);
+}
+
+.button:hover {
+    background-color: #ccc;
+}
+
+.button:focus {
+    outline: var(--focus-outline);
+    background-color: rgba(255,255,255,.25);
+    --focus-outline: 2px solid rgba(0,0,0,.5);
+}
+
+
+.bigButton {
+    appearance: none;
+    border: 1px solid rgba(125,100,110,.25);
+    border-radius: 0;
+    background-color: transparent;
+    box-shadow: -1px 1px 4px rgba(125,100,110,.125);
+    font-size: 1.5rem;
+    font-weight: 500;
+    padding: .75em 1.25em;
+    min-height: 2.5em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .5s linear, box-shadow .5s linear, transform .25s ease-in;
+    cursor: pointer;
+}
+
+.bigButton:focus {
+    box-shadow: 4px 4px 8px rgba(125,100,110,.25);
+}
+
+.bigButton:hover {
+    background: linear-gradient(192deg, rgba(25, 25, 25, .075), rgba(255, 255, 255, .95));
+    box-shadow: 4px 4px 8px rgba(125,100,110,.05);
+}
+
+.disabled, .button:disabled {
+    opacity: .5;
+    background-color: #eee;
+    pointer-events: none;
+}

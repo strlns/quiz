@@ -1,0 +1,79 @@
+.link {
+  position: relative;
+}
+
+@media (max-width: 959px) {
+  .link {
+    font-weight: 500;
+    display: inline-flex;
+    position: relative;
+  }
+
+  .link::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    height: 2px;
+    left: 0;
+    width: 0;
+    background-color: var(--color-highlight);
+    transition: width 0.25s ease-in;
+  }
+  .link.active {
+    color: var(--color-highlight);
+  }
+  .link:active::before,
+  .link.active::before,
+  .link:hover::before {
+    width: 100%;
+    transition: width 0.75s ease-out;
+  }
+}
+@media (min-width: 960px) {
+  .link {
+    background-image: linear-gradient(
+      to right,
+      var(--color-highlight),
+      var(--color-highlight) 50%,
+      var(--color-key-100) 50%
+    );
+    background-size: 200% 100%;
+    background-position: -100%;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: all 0.3s ease-in-out;
+    color: var(--color-key-100);
+  }
+
+  .link svg {
+    transition: color 0.5s ease;
+  }
+
+  .link:hover svg,
+  .link:active svg,
+  .link.active svg {
+    color: var(--color-highlight);
+  }
+
+  .link::before {
+    content: "";
+    background: var(--color-highlight);
+    display: block;
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 0;
+    height: 3px;
+    transition: width 0.3s ease-in-out;
+  }
+  .link:hover,
+  .link:active,
+  .link.active {
+    background-position: 0;
+  }
+  .link:hover::before,
+  .link:active::before,
+  .link.active::before {
+    width: 100%;
+  }
+}

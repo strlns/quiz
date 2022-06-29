@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  Quiz          Quiz[]
+  Game          Game[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum QuestionType {
+  CHOICE_SINGLE
+  CHOICE_MULTIPLE
+  BOOLEAN
+  ESTIMATE_FLOAT
+  ESTIMATE_INT
+  TEXT_GUESS
+}
+
+model Question {
+  id           String       @id @default(cuid())
+  type         QuestionType @default(CHOICE_SINGLE)
+  questionText String       @map("question_text")
+  answers      Answer[]
+  timeLimit    Int?         @map("time_limit")
+  Quiz         Quiz?        @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  quizId       String?
+  GameAnswer   GameAnswer[]
+}
+
+model Answer {
+  id          String                        @id @default(cuid())
+  answerText  String                        @map("answer_text")
+  question    Question                      @relation(references: [id], fields: [questionId], onDelete: Cascade)
+  questionId  String                        @map("question_id")
+  isSolution  Boolean                       @map("is_solution")
+  gameAnswers SelectedAnswersInGameAnswer[]
+}
+
+model Quiz {
+  id        String     @id @default(cuid())
+  title     String     @default("")
+  owner     User?      @relation(fields: [userId], references: [id])
+  userId    String?
+  questions Question[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Game      Game[]
+}
+
+model Game {
+  id                   String       @id @default(cuid())
+  user                 User         @relation(fields: [userId], references: [id])
+  quiz                 Quiz         @relation(fields: [quizId], references: [id])
+  currentQuestionIndex Int          @default(0)
+  answers              GameAnswer[]
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  userId               String
+  quizId               String
+}
+
+model GameAnswer {
+  id              String                        @id @default(cuid())
+  game            Game                          @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameId          String
+  question        Question                      @relation(fields: [questionId], references: [id])
+  questionId      String
+  selectedAnswers SelectedAnswersInGameAnswer[]
+  answerText      String?
+}
+
+model SelectedAnswersInGameAnswer {
+  gameAnswer   GameAnswer @relation(fields: [gameAnswerId], references: [id])
+  gameAnswerId String // relation scalar field (used in the `@relation` attribute above)
+  answer       Answer     @relation(fields: [answerId], references: [id])
+  answerId     String // relation scalar field (used in the `@relation` attribute above)
+
+  @@id([gameAnswerId, answerId])
+}
