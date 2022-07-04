@@ -1,7 +1,7 @@
 import { isQuestion, Question, QuestionWithAnswerIDs } from "./Question";
-import { shuffle } from "lodash-es";
+import { isObject, shuffle } from "lodash-es";
 import { Prisma, Quiz as QuizPrisma } from "@prisma/client";
-import { isAnswer } from "./Answer";
+import { isAnswer, isAnswerWithID } from "./Answer";
 import { convertViewDate } from "../utility/addViewData";
 
 export type QuizPrismaGeneratedModel = QuizPrisma;
@@ -17,18 +17,20 @@ export type QuizPrismaGeneratedModelWithQuestionIDs = Prisma.QuizGetPayload<{
 }>;
 
 export type QuizPrismaGeneratedModelWithRelations = Prisma.QuizGetPayload<{
-  include: {
+  select: {
+    id: true,
+    title: true,
     owner: {
       select: {
-        email: true;
-      };
-    };
+        email: true,
+      },
+    },
     questions: {
       include: {
-        answers: true;
-      };
-    };
-  };
+        answers: true,
+      },
+    },
+  },
 }>;
 
 export const DEFAULT_TITLE = "Untitled Quiz";
@@ -123,3 +125,20 @@ export const isQuiz = (data: any): data is Quiz => {
     data.questions.every((question: Question) => question.answers.length <= 8);
   return valid;
 };
+
+export const isQuizWithAnswerIDsAndQuizID = (data: any): data is QuizWithAnswerIDsAndQuizID => {
+  let valid = isObject(data);
+  valid = valid && data.questions && Array.isArray(data.questions);
+  valid = valid && typeof data.id === "string";
+  valid = valid &&
+    data.questions.every(
+      (questionData: any) =>
+        isQuestion(questionData) &&
+        questionData.answers.every((answerData) => isAnswerWithID(answerData))
+    );
+  valid = valid && data.questions.length <= 100;
+  valid =
+    valid &&
+    data.questions.every((question: Question) => question.answers.length <= 8);
+  return valid;
+}

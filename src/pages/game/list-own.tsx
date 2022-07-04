@@ -1,9 +1,9 @@
-import { Page } from "../../next-types/Page";
+import { Game } from ".prisma/client";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import prisma from "../../globals/db";
 import ProtectedPage from "../../layouts/ProtectedPage";
-import { Game } from ".prisma/client";
+import { Page } from "../../next-types/Page";
 import { convertViewDate } from "../../utility/addViewData";
 
 type ListOwnGamesProps = {
@@ -17,7 +17,7 @@ const ListOwnGames: Page<ListOwnGamesProps> = ({
     <ul>
       {games.map((game) => (
         <li key={game.id}>
-          <a href={`/play/game/${game.id}`}>{game.id}</a>
+          <a href={`/game/play/${game.id}`}>{game.id}</a>
         </li>
       ))}
     </ul>

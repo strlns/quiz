@@ -2,8 +2,11 @@
   position: relative;
   --question-width: 40rem;
   --question-width: min(80vw, 64ch);
-  padding-top: var(--quiz-top-bar-height);
   min-height: calc(100vh - var(--outer-space));
+}
+.quiz:fullscreen {
+  background-color: #ffffffe6;
+  max-width: 90ch;
 }
 
 @media (min-width: 960px) {
@@ -11,10 +14,34 @@
     --question-width: min(50vh, 64ch);
     --quiz-top-bar-height: 5rem;
   }
+  .quiz:fullscreen {
+    padding: 5em 10rem;
+  }
 }
 
 .quizInner {
   position: relative;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.questionNumber {
+  position: absolute;
+  left: 0;
+  top: var(--quiz-top-bar-height);
+  filter: drop-shadow(4px 12px 16px rgba(0, 0, 0, 0.5));
+  font-size: 5rem;
+  font-weight: 900;
+  opacity: 0.25;
+  color: var(--color-highlight-transparent-grayish-2);
+}
+
+@media (min-width: 768px) {
+  .quizInner {
+    justify-content: center;
+  }
 }
 
 .result {

@@ -1,6 +1,6 @@
 import React from "react";
 import { SessionContextValue, signIn, signOut } from "next-auth/react";
-import { SignInIcon, SignOutIcon } from "./Icons/Icons";
+import { SignInIcon, SignOutIcon } from "./UserInterface/Icons";
 import { LoadSpinner } from "./LoadSpinner";
 
 type LoginLogoutButtonProps = {

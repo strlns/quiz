@@ -29,6 +29,12 @@
   justify-content: center;
 }
 
+@media (min-width: 768px) {
+  .md\:justifyCenter {
+    justify-content: center;
+  }
+}
+
 .justifyBetween {
   justify-content: space-between;
 }
@@ -115,6 +121,35 @@
 
 .hidden {
   display: none;
+}
+
+.mt2 {
+  margin-top: 0.5rem;
+}
+.mt4 {
+  margin-top: 1rem;
+}
+.mb2 {
+  margin-bottom: 0.5rem;
+}
+.mb4 {
+  margin-bottom: 1rem;
+}
+.my2 {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.my4 {
+  margin-top: 1rem;
+  margin-bottom: rem;
+}
+
+.p2 {
+  padding: 0.5rem;
+}
+
+.p4 {
+  padding: 1rem;
 }
 
 @media (min-width: 960px) {

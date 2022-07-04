@@ -99,8 +99,8 @@ model Quiz {
 
 model Game {
   id                   String       @id @default(cuid())
-  user                 User         @relation(fields: [userId], references: [id])
-  quiz                 Quiz         @relation(fields: [quizId], references: [id])
+  user                 User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quiz                 Quiz         @relation(fields: [quizId], references: [id], onDelete: Cascade)
   currentQuestionIndex Int          @default(0)
   answers              GameAnswer[]
   createdAt            DateTime     @default(now())
@@ -113,7 +113,7 @@ model GameAnswer {
   id              String                        @id @default(cuid())
   game            Game                          @relation(fields: [gameId], references: [id], onDelete: Cascade)
   gameId          String
-  question        Question                      @relation(fields: [questionId], references: [id])
+  question        Question                      @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId      String
   selectedAnswers SelectedAnswersInGameAnswer[]
   answerText      String?

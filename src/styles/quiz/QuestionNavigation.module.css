@@ -6,18 +6,8 @@
     rgba(255, 255, 255, 0.95)
   );
   cursor: default;
-  pointer-events: none;
   color: #cecece;
   outline: none;
-}
-.navWrap {
-  display: flex;
-  align-items: flex-end;
-  flex-grow: 1;
-}
-
-.navWrap button {
-  pointer-events: auto;
 }
 
 .button {
@@ -31,7 +21,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.5s linear, box-shadow 0.5s linear,
+  transition: background-image 0.5s linear, box-shadow 0.5s linear,
     transform 0.25s ease-in;
   cursor: pointer;
 }

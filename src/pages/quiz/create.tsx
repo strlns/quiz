@@ -1,7 +1,7 @@
-import ProtectedPage from "../layouts/ProtectedPage";
+import ProtectedPage from "../../layouts/ProtectedPage";
 import { getSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
-import { Page } from "../next-types/Page";
+import { Page } from "../../next-types/Page";
 
 const CreateQuiz: Page = () => {
   return (

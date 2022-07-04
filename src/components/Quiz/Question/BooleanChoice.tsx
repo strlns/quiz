@@ -23,7 +23,7 @@ const BooleanChoice = ({
           className={answerClassName(answer, passed, selectedAnswer === index)}
           onClick={() => setSelectedAnswers([index])}
         >
-          {answer.answerText}
+          <span className={styles.answerText}>{answer.answerText}</span>
         </div>
       ))}
     </div>

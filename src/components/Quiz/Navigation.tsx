@@ -2,7 +2,7 @@ import boxStyles from "../../styles/UtilityStyles.module.css";
 import styles from "../../styles/quiz/QuestionNavigation.module.css";
 import btnStyles from "../../styles/Button.module.css";
 import React, { Dispatch } from "react";
-import { ArrowLeft, ArrowRight } from "../Icons/Icons";
+import { ArrowLeft, ArrowRight } from "../UserInterface/Icons";
 import clsx from "clsx";
 
 type NavigationProps = {
@@ -18,7 +18,7 @@ const ButtonPlaceholder = () => (
     className={btnStyles.button}
     style={{
       background: "none",
-      border: "none",
+      borderColor: "transparent",
       boxShadow: "none",
       outline: "none",
     }}
@@ -39,41 +39,41 @@ const QuestionNavigation = ({
   hasPrev,
 }: NavigationProps) => {
   return (
-    <div className={clsx(styles.navWrap)}>
-      <nav
-        className={clsx(
-          styles.nav,
-          boxStyles.flexGrow,
-          boxStyles.flex,
-          boxStyles.justifyBetween
-        )}
-      >
-        {hasPrev ? (
-          <button
-            type="button"
-            onClick={() => prev()}
-            title={"Go back"}
-            className={btnStyles.button}
-          >
-            <ArrowLeft />
-          </button>
-        ) : (
-          <ButtonPlaceholder />
-        )}
-        {hasNext ? (
-          <button
-            type="button"
-            onClick={() => next()}
-            className={btnStyles.button}
-            title={"Go forward"}
-          >
-            <ArrowRight />
-          </button>
-        ) : (
-          <ButtonPlaceholder />
-        )}
-      </nav>
-    </div>
+    <nav
+      className={clsx(
+        styles.nav,
+        boxStyles.flexGrow,
+        boxStyles.flex,
+        boxStyles.justifyEnd,
+        boxStyles.setGapM,
+        boxStyles.gap
+      )}
+    >
+      {hasPrev ? (
+        <button
+          type="button"
+          onClick={() => prev()}
+          title={"Go back"}
+          className={btnStyles.button}
+        >
+          <ArrowLeft />
+        </button>
+      ) : (
+        <ButtonPlaceholder />
+      )}
+      {hasNext ? (
+        <button
+          type="button"
+          onClick={() => next()}
+          className={btnStyles.button}
+          title={"Go forward"}
+        >
+          <ArrowRight />
+        </button>
+      ) : (
+        <ButtonPlaceholder />
+      )}
+    </nav>
   );
 };
 export default QuestionNavigation;

@@ -6,7 +6,7 @@ import { NextApiHandler } from "next";
 
 const handler: NextApiHandler = async (req, res) => {
   const session = await getSession({ req });
-  if (!session || !session?.user?.email) {
+  if (!session || !session?.user?.id) {
     res.status(401);
     res.end();
     return;
@@ -15,8 +15,8 @@ const handler: NextApiHandler = async (req, res) => {
   const countOwnerQuizzes = await prisma.quiz.count({
     where: {
       owner: {
-        email: {
-          equals: session.user.email,
+        id: {
+          equals: session.user.id,
         },
       },
     },
@@ -43,7 +43,7 @@ const handler: NextApiHandler = async (req, res) => {
 
   const owner: Prisma.UserCreateNestedOneWithoutQuizInput = {
     connect: {
-      email: session.user.email,
+      id: session.user.id,
     },
   };
   const quizCreate: Prisma.QuizCreateInput = {

@@ -16,11 +16,8 @@
     height: 2px;
     left: 0;
     width: 0;
-    background-color: var(--color-highlight);
+    background-color: var(--color-highlight-transparent);
     transition: width 0.25s ease-in;
-  }
-  .link.active {
-    color: var(--color-highlight);
   }
   .link:active::before,
   .link.active::before,
@@ -31,49 +28,99 @@
 }
 @media (min-width: 960px) {
   .link {
-    background-image: linear-gradient(
-      to right,
-      var(--color-highlight),
-      var(--color-highlight) 50%,
-      var(--color-key-100) 50%
-    );
-    background-size: 200% 100%;
-    background-position: -100%;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    transition: all 0.3s ease-in-out;
-    color: var(--color-key-100);
+    display: inline-flex;
+    position: relative;
   }
-
-  .link svg {
-    transition: color 0.5s ease;
-  }
-
-  .link:hover svg,
-  .link:active svg,
-  .link.active svg {
-    color: var(--color-highlight);
-  }
-
   .link::before {
     content: "";
-    background: var(--color-highlight);
-    display: block;
     position: absolute;
-    bottom: -3px;
-    left: 0;
-    width: 0;
-    height: 3px;
-    transition: width 0.3s ease-in-out;
+    pointer-events: none;
+    display: block;
+    left: -0.25em;
+    right: -0.75em;
+    height: 0.5em;
+    bottom: -0.25em;
+    overflow: hidden;
+    background-image: linear-gradient(
+      85deg,
+      var(--color-highlight-transparent) 0%,
+      var(--color-highlight-transparent) 100%,
+      transparent 100%
+    );
+    background-size: calc(200% + 4px);
+    background-repeat: no-repeat;
+    background-position: 200%;
+    z-index: 0;
+    opacity: 0.75;
+    transition: background-position-x linear 0.2s, border linear 0.1s 0.1s,
+      bottom var(--cubic-bezier-1) 0.5s;
+    border: 0px solid var(--color-highlight-transparent);
+    border-radius: 0.25em;
+    overflow: hidden;
+    clip-path: polygon(
+      96% 3%,
+      92% 16%,
+      95% 29%,
+      91% 52%,
+      98% 74%,
+      91% 90%,
+      95% 100%,
+      46% 97%,
+      0% 100%,
+      6% 71%,
+      1% 50%,
+      8% 35%,
+      4% 22%,
+      5% 11%,
+      11% 5%,
+      62% 1%
+    );
   }
-  .link:hover,
-  .link:active,
-  .link.active {
-    background-position: 0;
+  .link.active::before {
+    background-image: linear-gradient(
+      to right,
+      var(--color-highlight) 0%,
+      var(--color-highlight) 100%,
+      transparent 100%
+    );
+  }
+
+  li:where(:nth-of-type(even)) .link::before {
+    transform: skew(2.25deg, -1.5deg);
+    height: 0.25em;
+  }
+  li:where(:nth-of-type(odd)) .link::before {
+    transform: skew(1.5deg, -0.75deg);
+    height: 0.45em;
+  }
+  li:where(:nth-of-type(2)) .link::before {
+    transform: skew(-1.25deg, -1.25deg);
+  }
+  li:where(:nth-of-type(3)) .link::before {
+    transform: skew(2deg, 1deg);
+    height: 0.5em;
+  }
+  li:where(:nth-of-type(1)) .link::before {
+    transform: skew(1deg, 1.5deg);
+    height: 0.375em;
   }
   .link:hover::before,
   .link:active::before,
   .link.active::before {
-    width: 100%;
+    background-position-x: 100%;
+    transition: background-position-x var(--cubic-bezier-1) 0.375s,
+      border var(--cubic-bezier-1) 0.25s 0.25s,
+      bottom var(--cubic-bezier-1) 0.5s;
+    border-width: 5px;
+  }
+  .link.active::before {
+    background-image: linear-gradient(
+      to right,
+      var(--color-highlight) 0%,
+      var(--color-highlight) 100%,
+      transparent 100%
+    );
+    border-color: var(--color-highlight);
+    bottom: -0.5em;
   }
 }

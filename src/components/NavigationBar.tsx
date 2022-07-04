@@ -2,7 +2,9 @@ import styles from "../styles/NavigationBar.module.css";
 import linkEffectStyles from "../styles/LinkWithSlidingHoverEffect.module.css";
 import boxStyles from "../styles/UtilityStyles.module.css";
 import {
+  CSSProperties,
   FunctionComponent,
+  MouseEventHandler,
   ReactNode,
   useEffect,
   useRef,
@@ -11,18 +13,44 @@ import {
 import LoginLogoutButton from "./LoginLogoutButton";
 import SessionIndicator from "./SessionIndicator";
 import { SessionContextValue } from "next-auth/react";
-import useResizeObserver from "../hooks/useResizeObserver";
-import { debounce } from "lodash-es";
 import clsx from "clsx";
 import NavLink from "./UserInterface/NavLink";
-import { HamburgerIcon } from "./Icons/Icons";
+import { HamburgerIcon } from "./UserInterface/Icons";
 import useClickOutside from "../hooks/useClickOutside";
 import { useRouter } from "next/router";
+import useIsNearTopOrScrollingUp from "../hooks/useIsNearTopOrScrollingUp";
 
 type NavigationBarProps = {
   className?: string;
   sessionContext?: SessionContextValue;
 };
+
+type BurgerButtonProps = {
+  handleClick?: MouseEventHandler;
+  isShowMenu: boolean;
+  style?: CSSProperties;
+};
+
+const BurgerButton = ({
+  handleClick,
+  isShowMenu,
+  style,
+}: BurgerButtonProps) => (
+  <button
+    className={clsx(styles.navItem, styles.navToggle, boxStyles["lg:hidden"])}
+    onClick={handleClick}
+    style={style}
+  >
+    <span className={styles.navToggleText}>
+      {isShowMenu ? "Close Menu" : "Menu"}
+    </span>
+    {isShowMenu ? (
+      <HamburgerIcon title="Close Menu" />
+    ) : (
+      <HamburgerIcon title="Menu" />
+    )}
+  </button>
+);
 
 const NavigationBar: FunctionComponent<NavigationBarProps> = ({
   className: outerClassName,
@@ -30,43 +58,14 @@ const NavigationBar: FunctionComponent<NavigationBarProps> = ({
 }) => {
   const [isShowMenu, setShowMenu] = useState(false);
 
-  const [isNearTopOrScrollingUp, setIsNearTopOrScrollingUp] = useState(false);
-
-  const [navHeight, setNavHeight] = useState(0);
-
-  const resizeCallback: ResizeObserverCallback =
-    debounce<ResizeObserverCallback>((entries) => {
-      if (entries.length) {
-        const height = entries[0].target.clientHeight;
-        setNavHeight(height);
-        document.documentElement.style.setProperty(
-          "--nav-height",
-          `${height}px`
-        );
-      }
-    }, 1000);
-
-  const [callbackRef] = useResizeObserver(resizeCallback);
   const ref = useRef<HTMLElement | null>(null);
-
   useClickOutside(ref, () => {
     setShowMenu(false);
   });
 
-  useEffect(() => {
-    let oldScrollY = window.scrollY;
-    const listener: EventListener = debounce(() => {
-      const { scrollY } = window;
-      setIsNearTopOrScrollingUp(
-        scrollY < oldScrollY || scrollY < Math.max(navHeight, 100)
-      );
-      oldScrollY = scrollY;
-    }, 25);
-    window.addEventListener("scroll", listener, { passive: true });
-    return () => window.removeEventListener("scroll", listener);
-  }, [navHeight]);
-
   const { events } = useRouter();
+
+  const isNearTopOrScrollingUp = useIsNearTopOrScrollingUp(100);
 
   useEffect(() => {
     events.on("routeChangeComplete", () => {
@@ -80,20 +79,10 @@ const NavigationBar: FunctionComponent<NavigationBarProps> = ({
         [styles.show]: isShowMenu,
         [styles.scrolled]: !isNearTopOrScrollingUp,
       })}
-      ref={(element) => {
-        ref.current = element;
-        callbackRef(element);
-      }}
+      ref={ref}
     >
       <menu className={styles.navContent}>
-        <ul
-          className={clsx(
-            styles.navItemsMain,
-            boxStyles.flex,
-            boxStyles.itemsCenter,
-            boxStyles.flexWrap
-          )}
-        >
+        <ul className={clsx(styles.navItemsMain)}>
           <li>
             <NavLink href="/">
               <svg
@@ -107,19 +96,17 @@ const NavigationBar: FunctionComponent<NavigationBarProps> = ({
               </svg>
             </NavLink>
           </li>
-          <>
-            <li>
-              <NavLink href="/create-quiz">Create quiz</NavLink>
-            </li>
-          </>
+          <li>
+            <NavLink href="/quiz/create">Create quiz</NavLink>
+          </li>
           <li>
             <NavLink href="/opentrivia/demo">Demo trivia quiz</NavLink>
           </li>
           <li>
-            <NavLink href="/list/mine">Mine</NavLink>
+            <NavLink href="/quiz/list-own">My quizzes</NavLink>
           </li>
           <li>
-            <NavLink href="/list/games">My games</NavLink>
+            <NavLink href="/game/list-own">My games</NavLink>
           </li>
         </ul>
         <ul
@@ -129,10 +116,10 @@ const NavigationBar: FunctionComponent<NavigationBarProps> = ({
             boxStyles.gap
           )}
         >
-          <li className={clsx(styles.navItem)}>
+          <li className={clsx(boxStyles.p2)}>
             <SessionIndicator sessionContext={sessionContext} />
           </li>
-          <li className={clsx(styles.navItem, linkEffectStyles.link)}>
+          <li className={clsx(boxStyles.p2, linkEffectStyles.link)}>
             <LoginLogoutButton
               className={clsx(
                 styles.loginLogoutButton,
@@ -145,23 +132,10 @@ const NavigationBar: FunctionComponent<NavigationBarProps> = ({
           </li>
         </ul>
       </menu>
-      <button
-        className={clsx(
-          styles.navItem,
-          styles.navToggle,
-          boxStyles["lg:hidden"]
-        )}
-        onClick={() => setShowMenu(!isShowMenu)}
-      >
-        <span className={styles.navToggleText}>
-          {isShowMenu ? "Close Menu" : "Menu"}
-        </span>
-        {isShowMenu ? (
-          <HamburgerIcon title="Close Menu" />
-        ) : (
-          <HamburgerIcon title="Menu" />
-        )}
-      </button>
+      <BurgerButton
+        handleClick={() => setShowMenu(!isShowMenu)}
+        isShowMenu={isShowMenu}
+      />
     </nav>
   );
 };

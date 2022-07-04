@@ -10,7 +10,7 @@ import { Page } from "../../../next-types/Page";
 import { useReducer } from "react";
 import { getSession } from "next-auth/react";
 import ProtectedPage from "../../../layouts/ProtectedPage";
-import QuizGame, { Skeleton } from "../../../components/QuizGame";
+import QuizGame, { Skeleton } from "../../../components/Quiz/QuizGame";
 import { convertViewDate } from "../../../utility/addViewData";
 
 type ResumePersistedGameProps = {
@@ -54,7 +54,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     });
   }
   if (game) {
-    authorized = game?.user.email === session?.user?.email;
+    authorized = game?.user.id === session?.user?.id;
   }
   if (!game || !authorized) {
     return {

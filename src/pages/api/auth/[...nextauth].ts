@@ -29,18 +29,12 @@ export default NextAuth({
       : []),
   ],
   callbacks: {
-    /*To do: Use DB ID or similar in session, get rid of e-mail addresses*/
-    // session: async ({ session, token }) => {
-    //   console.log(session, token);
-    //   return session;
-    // },
-    // jwt: async ({ token, user, account, profile, isNewUser }) => {
-    //   console.log(token, user, account, profile);
-    //   return token;
-    // },
-    // signIn: async ({ user, account, profile, email, credentials }) => {
-    //   console.log(user, account, profile, email, credentials);
-    //   return true;
-    // },
-  },
+    /*To do: Use DB ID or similar in session*/
+    async session({ session, token, user }) {
+      if (typeof user.id === "string") {
+        session.user.id = user.id;
+      }
+      return session
+    }
+  }
 });

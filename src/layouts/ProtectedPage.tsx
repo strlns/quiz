@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "../styles/layouts/CommonLayoutStyles.module.css";
+import btnStyles from "../styles/Button.module.css";
 import NavigationBar from "../components/NavigationBar";
 import Head from "next/head";
 import { useSession } from "next-auth/react";
@@ -44,7 +45,10 @@ const ProtectedPage: React.FC<LayoutProps> = ({ children, title }) => {
               ) : (
                 <>
                   <p>Please sign in to visit this page.</p>
-                  <LoginLogoutButton sessionContext={sessionContext} />
+                  <LoginLogoutButton
+                    className={btnStyles.button}
+                    sessionContext={sessionContext}
+                  />
                 </>
               )}
             </div>

@@ -1,14 +1,16 @@
-import styles from "../styles/quiz/QuizGame.module.css";
-import boxStyles from "../styles/UtilityStyles.module.css";
-import Question from "./Quiz/Question/Question";
+import styles from "../../styles/quiz/QuizGame.module.css";
+import boxStyles from "../../styles/UtilityStyles.module.css";
+import Question from "./Question/Question";
 import { CSSProperties, Dispatch, useEffect, useRef } from "react";
-import { Game, GameAction, getComputedGameState } from "../models/Game";
-import { SingleChoicePlaceholder } from "./Quiz/Question/SingleChoice";
-import QuestionPlaceholder from "./Quiz/Question/QuestionPlaceholder";
+import { Game, GameAction, getComputedGameState } from "../../models/Game";
+import { SingleChoicePlaceholder } from "./Question/SingleChoice";
+import QuestionPlaceholder from "./Question/QuestionPlaceholder";
 import clsx from "clsx";
-import AnsweredQuestionResult from "./Quiz/AnsweredQuestionResult";
-import ControlsBar from "./Quiz/ControlsBar";
-import { ArrowRight } from "./Icons/Icons";
+import AnsweredQuestionResult from "./AnsweredQuestionResult";
+import ControlsBar from "./ControlsBar";
+import { ArrowRight, CheckIcon } from "../UserInterface/Icons";
+import useGamePersistence from "../../hooks/useGamePersistence";
+import PersistenceErrors from "./PersistenceErrors";
 
 type QuizGameProps = {
   game: Game;
@@ -27,7 +29,6 @@ const QuizGame = ({ game, dispatchGameAction }: QuizGameProps) => {
   const quizElement = useRef<HTMLDivElement>(null);
   const scrollIntoView = () => quizElement.current?.scrollIntoView();
   const {
-    answer,
     answers,
     quiz,
     isCorrectAnswer,
@@ -61,7 +62,12 @@ const QuizGame = ({ game, dispatchGameAction }: QuizGameProps) => {
     return remove;
   }, [quiz]);
 
-  //const [isPersisting, persistGame] = useGamePersistence(game);
+  const [
+    isPersisting,
+    persistGame,
+    persistenceErrors,
+    dismissPersistenceErrors,
+  ] = useGamePersistence(game);
 
   return (
     <div
@@ -82,17 +88,19 @@ const QuizGame = ({ game, dispatchGameAction }: QuizGameProps) => {
         hasAnswer={hasAnswer}
         isLast={isLast}
         isFirst={isFirst}
+        isPersisting={isPersisting}
+        persist={persistGame}
+        quizElementRef={quizElement}
       />
-      <div
-        className={clsx(
-          styles.quizInner,
-          isFinished && styles.finished,
-          boxStyles.flexGrow,
-          boxStyles.flex,
-          boxStyles.flexCol,
-          boxStyles.itemsCenter
-        )}
-      >
+      <PersistenceErrors
+        errors={persistenceErrors}
+        dismissErrors={dismissPersistenceErrors}
+      />
+
+      <span className={clsx(boxStyles.whitespaceNowrap, styles.questionNumber)}>
+        {currentQuestionIndex + 1} / {numberOfTotalQuestions}
+      </span>
+      <div className={clsx(styles.quizInner, isFinished && styles.finished)}>
         {question ? (
           <Question
             question={question}
@@ -116,7 +124,8 @@ const QuizGame = ({ game, dispatchGameAction }: QuizGameProps) => {
             className={clsx(
               boxStyles.flex,
               boxStyles.gap,
-              boxStyles.justifyEvenly
+              boxStyles.justifyEvenly,
+              boxStyles.itemsCenter
             )}
             style={{ minWidth: "var(--question-width)" }}
           >

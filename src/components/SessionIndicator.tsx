@@ -1,7 +1,7 @@
 import { Session } from "next-auth";
 import styles from "../styles/SessionIndicator.module.css";
 import { SessionContextValue } from "next-auth/react";
-import { HeartIcon, LockIcon, PersonIcon } from "./Icons/Icons";
+import { HeartIcon, LockIcon, PersonIcon } from "./UserInterface/Icons";
 
 type SessionIndicatorProps = {
   sessionContext?: SessionContextValue;

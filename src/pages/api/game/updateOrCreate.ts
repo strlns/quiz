@@ -2,26 +2,32 @@ import { getSession } from "next-auth/react";
 import prisma from "../../../globals/db";
 import { NextApiHandler } from "next";
 import { GameAnswer, isChoicesGameAnswer } from "../../../models/GameAnswer";
-import { difference } from "lodash-es";
-import { QuizPrismaGeneratedModelWithQuestionIDs } from "../../../models/Quiz";
+import { difference, some } from "lodash-es";
+import { fromPrisma, QuizPrismaGeneratedModelWithQuestionIDs, QuizWithAnswerIDsAndQuizID } from "../../../models/Quiz";
 import {
   convertInGameAnswersToPersistentFormat,
-  GameFromPersisted,
+  Game,
+  GameFromPersistedQuiz,
 } from "../../../models/Game";
+import { Session } from "next-auth";
+import { InGameGameAnswerToDoRemove } from "../../../models/Question";
+import { isAnswerWithID } from "../../../models/Answer";
+import { getQuiz } from "../../quiz/play/[id]";
 
 const handler: NextApiHandler = async (req, res) => {
   const session = await getSession({ req });
-  if (!session || !session?.user?.email) {
+  if (!session || !session?.user?.id) {
     res.status(401);
     res.end();
     return;
   }
+  
 
   const countOwnerGames = await prisma.game.count({
     where: {
       user: {
-        email: {
-          equals: session.user.email,
+        id: {
+          equals: session.user.id,
         },
       },
     },
@@ -34,50 +40,84 @@ const handler: NextApiHandler = async (req, res) => {
     return;
   }
 
-  const payload: unknown = JSON.parse(req.body);
+  let payload: unknown = JSON.parse(req.body);
+
   if (!isGameUpdatePayload(payload)) {
     res.status(400);
     return;
   }
-
-  if (isGamePayload(payload)) {
-    const quiz = await prisma.quiz.findUnique({
-      where: { id: payload.quizId },
-      include: {
-        questions: {
-          select: {
-            id: true,
-          },
-        },
-      },
-    });
+  
+  if (isGameFromNewQuizPayload(payload)) {
+    
+    const quiz = await getQuiz(payload.quizId);
     if (!quiz) {
-      res.status(500);
+      res.status(400);
       return;
     }
-    const createdGame = await prisma.game.create({
-      data: {
-        user: {
-          connect: {
-            email: session.user.email,
-          },
-        },
-        quiz: {
-          connect: {
-            id: quiz.id,
-          },
-        },
-        currentQuestionIndex: payload.currentQuestionIndex,
-        answers: {
-          create: convertAnswers(payload.answers, quiz),
-        },
-      },
-    });
-    if (createdGame) {
-      res.status(200).json({ id: createdGame.id });
+    const quizWithAnswerIDsAndQuizID = fromPrisma(quiz);
+    const createGamePayload = getSaveGamePayload(
+      {
+        quiz: quizWithAnswerIDsAndQuizID,
+        id: quizWithAnswerIDsAndQuizID.id,
+        answers: payload.answers,
+        currentQuestionIndex: payload.currentQuestionIndex
+      }
+    );
+    payload = createGamePayload;
+  }
+  if (isGamePayload(payload)) {
+    try {
+      const createdGame = await createGame(payload, session);
+      if (createdGame) {
+        res.status(200).json({ id: createdGame.id });
+      }
+    }
+    catch (e) {
+      res.status(500);
     }
   }
 };
+
+
+class AuthError extends Error {};
+class DataErrror extends Error {};
+
+async function createGame(payload: GamePayload, session: Session) {
+  if (!session?.user?.email) {
+    throw new AuthError("could not create game, auth error.");
+  }
+  const quiz = await prisma.quiz.findUnique({
+    where: { id: payload.quizId },
+    include: {
+      questions: {
+        select: {
+          id: true,
+        },
+      },
+    },
+  });
+  if (!quiz) {
+    throw new DataErrror("could not create game, quiz not found");
+  }
+  return await prisma.game.create({
+    data: {
+      user: {
+        connect: {
+          id: session.user.id,
+        },
+      },
+      quiz: {
+        connect: {
+          id: quiz.id,
+        },
+      },
+      currentQuestionIndex: payload.currentQuestionIndex,
+      answers: {
+        create: convertAnswers(payload.answers, quiz),
+      },
+    },
+  });
+}
 
 const convertAnswers = (
   answers: GameAnswer[],
@@ -127,6 +167,12 @@ type GamePayload = {
   answers: GameAnswer[];
 };
 
+type GameFromNewQuizPayload = {
+  quizId: string;
+  currentQuestionIndex: number;
+  answers: InGameGameAnswerToDoRemove[];
+};
+
 type GameAnswerPayload = {
   gameId: string;
   currentQuestionIndex: number;
@@ -134,7 +180,7 @@ type GameAnswerPayload = {
   answer?: GameAnswer;
 };
 
-export const getSaveGamePayload = (game: GameFromPersisted): GamePayload => {
+export const getSaveGamePayload = (game: GameFromPersistedQuiz): GamePayload => {
   return {
     quizId: game.quiz.id,
     currentQuestionIndex: game.currentQuestionIndex,
@@ -142,10 +188,31 @@ export const getSaveGamePayload = (game: GameFromPersisted): GamePayload => {
   };
 };
 
+export const getSaveGameWithNewQuizIdPayload = (game: Game, quizID: string): GameFromNewQuizPayload => {
+  return {
+    quizId: quizID,
+    currentQuestionIndex: game.currentQuestionIndex,
+    answers: game.answers,
+  };
+};
+
 const isGamePayload = (input: any): input is GamePayload => {
   return (
     isObject(input) &&
     Array.isArray(input.answers) &&
+    input.answers.every((answer: any) => Array.isArray(answer.selectedAnswers) && isAnswerWithID(answer.selectedAnswers)),
+    difference(Object.keys(input), [
+      "quizId",
+      "currentQuestionIndex",
+      "answers",
+    ]).length === 0
+  );
+};
+const isGameFromNewQuizPayload = (input: any): input is GameFromNewQuizPayload => {
+  return (
+    isObject(input) &&
+    Array.isArray(input.answers) &&
+    !input.answers.some((answer: unknown) => isAnswerWithID(answer)) &&
     difference(Object.keys(input), [
       "quizId",
       "currentQuestionIndex",

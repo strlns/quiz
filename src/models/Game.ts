@@ -1,4 +1,4 @@
-import { isQuiz, Quiz, QuizWithAnswerIDsAndQuizID } from "./Quiz";
+import { isQuiz, isQuizWithAnswerIDsAndQuizID, Quiz, QuizWithAnswerIDsAndQuizID } from "./Quiz";
 import { InGameGameAnswerToDoRemove, isCorrect } from "./Question";
 import { GameAnswerChoices, isChoicesQuestionType } from "./GameAnswer";
 import { Prisma } from "@prisma/client";
@@ -10,9 +10,13 @@ export interface Game {
   currentQuestionIndex: number;
 }
 
-export interface GameFromPersisted extends Game {
+export interface GameFromPersistedQuiz extends Game {
   quiz: QuizWithAnswerIDsAndQuizID;
   id?: string;
+}
+
+export const isGameFromPersistedQuiz = (game: any): game is GameFromPersistedQuiz => {
+  return isGame(game) && isQuizWithAnswerIDsAndQuizID(game.quiz)
 }
 
 export const createNewGameFromQuiz = (quiz: Quiz): Game => ({
@@ -23,7 +27,7 @@ export const createNewGameFromQuiz = (quiz: Quiz): Game => ({
 
 export const createNewGameFromPersistedQuiz = (
   quiz: QuizWithAnswerIDsAndQuizID
-): GameFromPersisted => ({
+): GameFromPersistedQuiz => ({
   quiz,
   currentQuestionIndex: 0,
   answers: [],
@@ -78,14 +82,14 @@ export const gameReducer = (
 };
 
 export const gameReducerWithInitialState = (
-  state: GameFromPersisted,
+  state: GameFromPersistedQuiz,
   action: GameAction
-): GameFromPersisted => {
+): GameFromPersistedQuiz => {
   const game = gameReducer(state, action);
   if (!game) {
     throw new Error("Expected initial state for game");
   }
-  return game as GameFromPersisted;
+  return game as GameFromPersistedQuiz;
 };
 
 export const isGame = (data: any): data is Game => {
@@ -109,7 +113,10 @@ export const convertInGameAnswersToPersistentFormat = (
         "Incompatible format, old in-game answers only work for choice questions"
       );
     }
-    const selectedAnswers = answers[i] ?? [];
+    let selectedAnswers = answers[i] ?? [];
+    if (!Array.isArray(selectedAnswers)) {
+      selectedAnswers = [selectedAnswers];
+    }
     result.push({
       questionType: question.type,
       selectedAnswers: selectedAnswers.map((index) => question.answers[index]),
@@ -187,7 +194,7 @@ export type GamePrismaGeneratedModelWithRelations = Prisma.GameGetPayload<
 
 export const fromPrisma = (
   input: GamePrismaGeneratedModelWithRelations
-): GameFromPersisted => {
+): GameFromPersistedQuiz => {
   const quiz = quizFromPrisma(input.quiz);
   const answerMap = new Map<string, number>();
   for (const question of quiz.questions) {

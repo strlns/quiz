@@ -25,9 +25,14 @@ body {
   --gap: var(--gap-s);
   --desktop: 720px;
   --color-key-900: #eee;
+  --color-key-800: #ddd;
   --color-key-100: #321421;
-  --color-highlight: #129bf7;
+  --color-highlight-transparent-grayish: rgba(100, 125, 175, 0.4);
+  --color-highlight-transparent-grayish-2: rgba(75, 150, 200, 0.5);
+  --color-highlight-transparent: rgba(50, 150, 200, 0.5);
+  --color-highlight: rgba(25, 75, 150, 1);
   --quiz-top-bar-height: 3.5rem;
+  --cubic-bezier-1: cubic-bezier(0.6, 0.15, 0, 0.83);
 }
 
 @media (min-width: 720px) {

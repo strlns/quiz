@@ -1,37 +1,36 @@
 import Head from "next/head";
 import PublicPage from "../../layouts/PublicPage";
 
+import { FormEventHandler, useEffect, useReducer, useState } from "react";
+import QuizGame, { Skeleton } from "../../components/Quiz/QuizGame";
 import {
   OpenTriviaResponse,
   OpenTriviaResponseWithShuffledAnswers,
 } from "../../models/external/OpenTriviaResponse";
-import { Page } from "../../next-types/Page";
 import {
   shuffleAnswers,
   toQuiz,
 } from "../../models/external/OpenTriviaResponseConverter";
-import QuizGame, { Skeleton } from "../../components/QuizGame";
-import { FormEventHandler, useEffect, useReducer, useState } from "react";
+import { Page } from "../../next-types/Page";
 
-import OpenTriviaApiForm from "../../components/OpenTriviaDemo/Form";
+import { GetStaticProps } from "next";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import LoadingIndicator from "../../components/LoadingIndicator";
+import { LoadSpinner } from "../../components/LoadSpinner";
+import OpenTriviaApiForm from "../../components/OpenTriviaDemo/Form";
+import demoQuiz from "../../data/opentrivia/demoQuiz.json";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useOnMount } from "../../hooks/useOnMount";
 import { useSimpleErrorMessage } from "../../hooks/useSimpleErrorMessage";
-import { useLocalStorage } from "../../hooks/useLocalStorage";
-import demoQuiz from "../../data/opentrivia/demoQuiz.json";
-import { LoadSpinner } from "../../components/LoadSpinner";
-import { signIn, useSession } from "next-auth/react";
-import btnStyles from "../../styles/Button.module.css";
-import boxStyles from "../../styles/UtilityStyles.module.css";
-import { Quiz } from "../../models/Quiz";
 import {
   createNewGameFromQuiz,
   Game,
   gameReducer,
   isGame,
 } from "../../models/Game";
-import { GetStaticProps } from "next";
-import LoadingIndicator from "../../components/LoadingIndicator";
+import { Quiz } from "../../models/Quiz";
+import boxStyles from "../../styles/UtilityStyles.module.css";
 
 const LOCALSTORAGE_KEY_QUIZ = "opentrivia_quiz";
 
@@ -151,27 +150,6 @@ const NewOpenTriviaQuiz: Page<QuizFromTriviaApiProps> = ({ demo }) => {
     await loadNewQuiz();
   };
 
-  const persistQuizToDatabase = async () => {
-    if (sessionStatus !== "authenticated") {
-      await signIn();
-    }
-    if (!game || !session?.user?.email) {
-      return;
-    }
-    setPersisting(true);
-    const response = await fetch("/api/quiz/create", {
-      method: "POST",
-      body: JSON.stringify(game.quiz),
-    });
-    setPersisting(false);
-    if (response.status === 200) {
-      const id = (await response.json()).id;
-      if (id) {
-        await router.push(`/play/quiz/${id}`);
-      }
-    }
-  };
-
   return (
     <>
       <Head>
@@ -191,15 +169,6 @@ const NewOpenTriviaQuiz: Page<QuizFromTriviaApiProps> = ({ demo }) => {
             }
             onSubmit={onSubmit}
           />
-          <div className={boxStyles.boxLast}>
-            <button
-              className={btnStyles.button}
-              onClick={persistQuizToDatabase}
-            >
-              Persist to DB
-              {persisting ? <LoadSpinner /> : null}
-            </button>
-          </div>
         </LoadingIndicator>
       </div>
       {error ? <p>{error}</p> : null}

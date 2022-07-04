@@ -28,7 +28,7 @@ const ListOwnQuizzes: Page<ListOwnQuizzesProps> = ({
           {quizzes.map((quiz) => (
             <tr key={quiz.id}>
               <td>
-                <Link href={`/play/quiz/${quiz.id}`}>
+                <Link href={`/quiz/play/${quiz.id}`}>
                   <a className={styles.quizLink}>{quiz.title}</a>
                 </Link>
               </td>
