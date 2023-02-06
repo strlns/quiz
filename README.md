@@ -1,4 +1,23 @@
-# Custom `server.js` and `start` command
+# What is this?
+
+This was/is planned to be an app to allow users to create, edit, persist, share and play a quiz / quizzes.
+
+Currently, only loading demo quiz questions from [here](https://opentdb.com/) fully works.
+Login and persistence of quiz questions and game states are also already possible, but because there
+is no UI to create quizzes, this is only possible with the demo questions as of now.
+Also, everything is kind of ugly :D
+
+## next-auth
+
+[next-auth](https://next-auth.js.org/) is used for authentication in this project. Login via "Magic Link" is already possible when entering suitable credentials for an e-mail server in `.env`.
+
+The accounts are also persisted in a MySQL database, but every signup needs to be confirmed separately via E-mail, despite the account being persisted.
+
+Google as a sign-in provider is enabled in the code,
+but not enabled in the Google account linked to the deployed `<SUPER_SECRET_URL>`.
+Important note: next-auth is not compatible with HTTP-Basic-Authentication out of the box, or I haven't found out yet how to do that.
+
+## Custom `server.js` and `start` command
 
 To make this work on a shared hosting with Plesk, this uses a custom server.
 
